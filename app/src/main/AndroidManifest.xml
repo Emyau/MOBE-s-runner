@@ -13,6 +13,13 @@
         android:theme="@style/Theme.MOBEsrunner"
         tools:targetApi="31">
         <activity
+            android:name=".TitleScreenActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".MainActivity"
             android:screenOrientation="landscape"
             android:turnScreenOn="true"
