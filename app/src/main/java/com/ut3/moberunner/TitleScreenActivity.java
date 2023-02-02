@@ -2,6 +2,8 @@ package com.ut3.moberunner;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
 public class TitleScreenActivity extends AppCompatActivity {
