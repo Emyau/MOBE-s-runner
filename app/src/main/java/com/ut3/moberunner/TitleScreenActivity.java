@@ -10,7 +10,9 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 
 public class TitleScreenActivity extends AppCompatActivity {
@@ -34,6 +36,18 @@ public class TitleScreenActivity extends AppCompatActivity {
         });
         isMuted = prefs.getBoolean("isMuted", false);
         setVolumeIcon(isMuted);
+
+        Button runButton = (Button) findViewById(R.id.runButton);
+        runButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startRun();
+            }
+        });
+    }
+
+    private void startRun() {
+        setContentView(new ChickenView(this));
     }
 
     private void setVolumeIcon(boolean isMuted) {
