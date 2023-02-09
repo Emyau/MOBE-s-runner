@@ -4,53 +4,67 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 public class TitleScreenActivity extends AppCompatActivity {
 
-    private boolean isMuted = false;
+    private boolean isMuted;
+    private Context mContext = this;
+    private SharedPreferences prefs;
+    private ImageView volumeImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ImageView volumeImage = findViewById(R.id.volumeIcon);
+        setContentView(R.layout.activity_title_screen);
+        prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        volumeImage = (ImageView) findViewById(R.id.volumeIcon);
         volumeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggleMute(v);
+                toggleMute();
             }
         });
-        setContentView(R.layout.activity_title_screen);
+        isMuted = prefs.getBoolean("isMuted", false);
+        setVolumeIcon(isMuted);
     }
 
-    private void toggleMute(View v) {
-        ImageView iv = (ImageView) v;
+    private void setVolumeIcon(boolean isMuted) {
         if(isMuted) {
-            unmute();
-            isMuted = false;
-            iv.setImageResource(R.drawable.volume_on);
+            volumeImage.setImageResource(R.drawable.volume_on);
         } else {
-            mute();
-            isMuted = true;
-            iv.setImageResource(R.drawable.volume_off);
-
+            volumeImage.setImageResource(R.drawable.volume_off);
         }
     }
 
+    private void toggleMute() {
+        if(isMuted) {
+            unmute();
+            isMuted = false;
+        } else {
+            mute();
+            isMuted = true;
+        }
+        setVolumeIcon(isMuted);
+    }
+
     private void mute() {
-        //mute audio
-        AudioManager amanager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        amanager.setStreamMute(AudioManager.STREAM_NOTIFICATION, true);
+        SharedPreferences.Editor editor = prefs.edit(); // get an Editor object
+        editor.putBoolean("isMuted", true); // set the mute boolean to true
+        // Audio code TBD
     }
 
     public void unmute() {
-        //unmute audio
-        AudioManager amanager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        amanager.setStreamMute(AudioManager.STREAM_NOTIFICATION, false);
+        SharedPreferences.Editor editor = prefs.edit(); // get an Editor object
+        editor.putBoolean("isMuted", false); // set the mute boolean to true
+        // Audio code TBD
     }
 
 }
