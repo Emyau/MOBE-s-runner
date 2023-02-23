@@ -1,90 +1,87 @@
 package com.ut3.moberunner;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Point;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Handler;
-import android.view.Display;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+
+import com.ut3.moberunner.actors.Chick;
 
 public class ChickenView extends View {
 
-    int screenWidth, screenHeight, newWidth, newHeight;
-    int grassX = 0, frontX = 0;
-    int chickenX, chickenY, chickenFrame = 0;
-    Bitmap grass, front;
-    Bitmap chicken[] = new Bitmap[6];
+    private Chick chick;
 
+    int groundLevel;
     Handler handler;
     Runnable runnable;
-    final long UPDATE_TIME = 20;
+
+    // 60fps
+    final long UPDATE_TIME = 17;
 
     public ChickenView(Context context) {
         super(context);
-        grass = BitmapFactory.decodeResource(getResources(), R.drawable.forest3);
-        front = BitmapFactory.decodeResource(getResources(), R.drawable.frontground1);
-        chicken[0] = BitmapFactory.decodeResource(getResources(), R.drawable.cat1);
-        chicken[1] = BitmapFactory.decodeResource(getResources(), R.drawable.cat2);
-        chicken[2] = BitmapFactory.decodeResource(getResources(), R.drawable.cat3);
-        chicken[3] = BitmapFactory.decodeResource(getResources(), R.drawable.cat4);
-        chicken[4] = BitmapFactory.decodeResource(getResources(), R.drawable.cat5);
-        chicken[5] = BitmapFactory.decodeResource(getResources(), R.drawable.cat6);
+        setupGame();
 
-        Display display = ((Activity) getContext()).getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        screenWidth = size.x;
-        screenHeight = size.y;
-        float height = grass.getHeight();
-        float width = grass.getWidth();
-        //float ratio = width / height;
-        newWidth = screenWidth;
-        newHeight = screenHeight;
-        grass = Bitmap.createScaledBitmap(grass, newWidth, newHeight, false);
-        front = Bitmap.createScaledBitmap(front, newWidth, newHeight, false);
-        chickenX = screenWidth / 2 - 200;
-        chickenY = screenHeight - 250;
         handler = new Handler();
+        runnable = this::invalidate;
 
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                invalidate();
-            }
-        };
+    }
+
+    private void setupGame() {
+        this.chick = new Chick();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        groundLevel = (int) (getHeight() * 0.8);
+        chick.setGroundLevel(groundLevel);
 
-        grassX -= 10;
-        if(grassX < -newWidth) {
-            grassX = 0;
-        }
-        canvas.drawBitmap(grass, grassX, 0, null);
-        if(grassX < screenWidth - newWidth) {
-            canvas.drawBitmap(grass, grassX+newWidth, 0, null);
-        }
+        drawGround(canvas);
+        drawChick(canvas);
+        drawDebug(canvas);
 
-        frontX -= 20;
-        if(frontX < -newWidth) {
-            frontX = 0;
-        }
-        canvas.drawBitmap(front, frontX, 0, null);
-        if(frontX < screenWidth - newWidth) {
-            canvas.drawBitmap(front, frontX+newWidth, 0, null);
-        }
-
-        chickenFrame++;
-        if(chickenFrame == 6) {
-            chickenFrame = 0;
-        }
-        canvas.drawBitmap(chicken[chickenFrame], chickenX, chickenY, null);
-
+        // This define une FPS of the game
         handler.postDelayed(runnable, UPDATE_TIME);
+    }
+
+    private void drawGround(Canvas canvas) {
+        Paint p = new Paint();
+        p.setColor(Color.RED);
+        p.setStrokeWidth(10);
+        canvas.drawLine(0, groundLevel, canvas.getWidth(), groundLevel, p);
+    }
+
+    private void drawChick(Canvas canvas) {
+        chick.nextFrame(canvas);
+    }
+
+    private void drawDebug(Canvas canvas) {
+        Paint p = new Paint();
+        p.setColor(Color.WHITE);
+        p.setTextSize(20);
+        canvas.drawText("Groud level : " + groundLevel, 50, 50, p);
+    }
+
+    // Feature for blind people we won't use
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            Log.d("DEV", "onTouch: JUMP");
+            chick.jump();
+            return true;
+        }
+        return false;
     }
 }

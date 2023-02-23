@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace 'com.ut3.moberunner'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.ut3.moberunner"
