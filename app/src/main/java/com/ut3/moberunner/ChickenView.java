@@ -15,7 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-
+import com.ut3.moberunner.actors.Actor;
 import com.ut3.moberunner.actors.Chick;
 import com.ut3.moberunner.sensorhandlers.MicroHandler;
 import com.ut3.moberunner.utils.AccelerationVector;
@@ -43,7 +43,7 @@ public class ChickenView extends View {
     private SensorManager sm;
     private AccelerationVector accelerationVector;
 
-    private SensorEventListener listener = new SensorEventListener() {
+    private SensorEventListener listenerAccel = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
             if (accelerationVector == null) {
@@ -63,10 +63,24 @@ public class ChickenView extends View {
         }
     };
 
+    private SensorEventListener listenerGyro = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            // The acceleration may be negative, so take their absolute value
+            rotaZ = event.values[2];
+        }
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            //not used
+        }
+    };
+
     // 60fps
     final long UPDATE_TIME = 1000 / 60;
     float speed = 10;
     private boolean isRecording;
+    private double audioLevel = 0;
+    float rotaZ = 0;
 
     public ChickenView(Context context) {
         super(context);
@@ -109,8 +123,10 @@ public class ChickenView extends View {
         scorePaint.setTextSize(40);
 
         sm = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
-        Sensor sensor = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sm.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        Sensor sensorAccel = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sm.registerListener(listenerAccel, sensorAccel, SensorManager.SENSOR_DELAY_NORMAL);
+        Sensor sensorGyro = sm.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
+        sm.registerListener(listenerGyro, sensorGyro, SensorManager.SENSOR_DELAY_NORMAL);
 
         microHandler = new MicroHandler(getContext());
         microHandler.startRecording();
@@ -127,6 +143,7 @@ public class ChickenView extends View {
         drawGround(canvas);
         drawChick(canvas);
         drawDebug(canvas);
+
         // TODO: appeler directemnt la méthode de l'actorManager ici
         actorManager.handleActors(canvas, accelerationVector, microHandler.getAudioLevel());
         updateScore(canvas);
@@ -198,4 +215,5 @@ public class ChickenView extends View {
         chick.setState(Chick.ChickState.RUNNING);
         actorGenerator.setGenerating(true);
     }
+
 }
