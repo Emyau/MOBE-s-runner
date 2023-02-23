@@ -6,11 +6,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorListener;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 
-public class ChickenView extends View {
+public class ChickenView extends View implements SensorEventListener {
 
     int screenWidth, screenHeight, newWidth, newHeight;
     int grassX = 0, frontX = 0;
@@ -87,4 +92,24 @@ public class ChickenView extends View {
 
         handler.postDelayed(runnable, UPDATE_TIME);
     }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        int z = (int) event.values[2];
+
+        Log.i("DEBUG", String.valueOf(z));
+
+        this.moveImage(z);
+    }
+
+    //osef pour le moment
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+
+    void moveImage(int z) {
+        chickenY += z;
+        this.invalidate();
+    }
+
 }
