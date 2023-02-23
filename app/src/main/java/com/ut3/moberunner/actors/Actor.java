@@ -1,11 +1,13 @@
 package com.ut3.moberunner.actors;
 
-public class Actor {
-    // Coordonate
-    private float x, y;
+import android.graphics.Canvas;
+import android.graphics.RectF;
+import android.util.Log;
 
-    // Dimmension
-    private int height, width;
+public abstract class Actor {
+    // Coordonate
+    protected float x, y;
+    protected int height, width;
 
     public Actor(float x, float y, int height, int width) {
         this.x = x;
@@ -21,9 +23,16 @@ public class Actor {
         this.width = 0;
     }
 
-    public void addY(int z) {
-        this.y += z;
+    public boolean isCollidingWith(Actor actor) {
+        RectF myRect = new RectF(x, y, x + width, y + height);
+        RectF actorRect = new RectF(actor.x, actor.y, actor.x + actor.width, actor.y + actor.height);
+        if (Math.abs(x - actor.x) < 50) {
+            Log.d("DEV", "isCollidingWith: proche");
+        }
+        return myRect.intersect(actorRect);
     }
+
+    public abstract void nextFrame(Canvas canvas);
 
     public float getX() {
         return x;
@@ -56,4 +65,5 @@ public class Actor {
     public void setWidth(int width) {
         this.width = width;
     }
+
 }

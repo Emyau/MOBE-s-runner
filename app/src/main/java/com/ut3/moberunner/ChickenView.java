@@ -10,46 +10,74 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.ut3.moberunner.actors.Actor;
 import com.ut3.moberunner.actors.Chick;
+import com.ut3.moberunner.actors.Spike;
+
+import java.util.LinkedList;
+import java.util.Random;
 
 public class ChickenView extends View {
 
+    private final float CHICK_X = 50;
     private Chick chick;
+    private LinkedList<Actor> actors = new LinkedList<>();
+    private int score = 0;
 
-    int groundLevel;
-    Handler handler;
-    Runnable runnable;
+    private Paint scorePaint;
+
+    private int groundLevel;
+    private Handler handler;
+    private Runnable runnable;
+    private Random random = new Random();
 
     // 60fps
-    final long UPDATE_TIME = 17;
+    final long UPDATE_TIME = 1000 / 60;
+    float speed = 10;
 
     public ChickenView(Context context) {
         super(context);
-        setupGame();
-
         handler = new Handler();
         runnable = this::invalidate;
 
     }
 
-    private void setupGame() {
-        this.chick = new Chick();
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        setupGame();
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
+    private void setupGame() {
+        chick = new Chick(CHICK_X);
+        groundLevel = (int) (getHeight() * 0.8);
+        chick.setGroundLevel(groundLevel);
+
+        scorePaint = new Paint();
+        scorePaint.setTextAlign(Paint.Align.CENTER);
+        scorePaint.setColor(Color.WHITE);
+        scorePaint.setTextSize(40);
+
+
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        groundLevel = (int) (getHeight() * 0.8);
-        chick.setGroundLevel(groundLevel);
+        boolean doSpawnSpike = random.nextInt(100) > 98;
+        if (chick.getState() != Chick.ChickState.DEAD && doSpawnSpike) {
+            actors.add(new Spike(speed, getWidth(), groundLevel));
+        }
+
+        if (chick.getState() == Chick.ChickState.DEAD) {
+            actors.clear();
+        }
 
         drawGround(canvas);
         drawChick(canvas);
         drawDebug(canvas);
+        handleActors(canvas);
+        updateScore(canvas);
 
         // This define une FPS of the game
         handler.postDelayed(runnable, UPDATE_TIME);
@@ -70,7 +98,30 @@ public class ChickenView extends View {
         Paint p = new Paint();
         p.setColor(Color.WHITE);
         p.setTextSize(20);
-        canvas.drawText("Groud level : " + groundLevel, 50, 50, p);
+        canvas.drawText("Ground level : " + groundLevel, 50, 50, p);
+    }
+
+    private void handleActors(Canvas canvas) {
+        actors.forEach(actor -> handleActor(actor, canvas));
+    }
+
+    private void handleActor(Actor actor, Canvas canvas) {
+        actor.nextFrame(canvas);
+        if (actor.isCollidingWith(chick)) {
+            Log.d("DEV", "Collision");
+            chick.paint.setARGB(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
+            chick.setState(Chick.ChickState.DEAD);
+        }
+    }
+
+    private void updateScore(Canvas canvas) {
+        if (chick.getState() != Chick.ChickState.DEAD) {
+            score += 1;
+            canvas.drawText(Integer.toString(score), (float) (getWidth() / 2), (float) (getHeight() * 0.1), scorePaint);
+        } else {
+            canvas.drawText(Integer.toString(score), (float) (getWidth() / 2), (float) (getHeight() * 0.1), scorePaint);
+            canvas.drawText("Game over", (float) (getWidth() / 2), (float) (getHeight() / 2), scorePaint);
+        }
     }
 
     // Feature for blind people we won't use
@@ -78,9 +129,18 @@ public class ChickenView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-            Log.d("DEV", "onTouch: JUMP");
-            chick.jump();
-            return true;
+            switch (chick.getState()) {
+                case DEAD:
+                    score = 0;
+                    chick.setState(Chick.ChickState.RUNNING);
+                    return true;
+                case RUNNING:
+                    Log.d("DEV", "onTouch: JUMP");
+                    chick.jump();
+                    return true;
+                case JUMPING:
+                    return true;
+            }
         }
         return false;
     }
