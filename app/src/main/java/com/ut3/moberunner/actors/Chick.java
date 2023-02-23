@@ -7,25 +7,36 @@ import android.graphics.Paint;
 public class Chick extends Actor {
     public enum ChickState {
         RUNNING,
-        JUMPING
+        JUMPING,
+        DEAD
     }
 
     private ChickState state;
-    private float groundLevel;
 
     // Vertical Velocity
     private Float vVelocity;
-    private float gravity;
-    // Lift size
-    private float lift;
+    private float groundLevel;
 
-    public Chick() {
+    final private float gravity;
+    final private float lift;
+
+    public Paint paint;
+
+    public Chick(float x) {
         super();
         this.state = ChickState.RUNNING;
-        super.setY(100);
-        super.setX(50);
-        gravity = 1;
-        lift = 20;
+
+        // Dimension
+        this.x = x;
+        y = 100;
+        height = 50;
+        width = 50;
+
+        gravity = 3;
+        lift = 35;
+
+        paint = new Paint();
+        paint.setColor(Color.RED);
 
         if (getY() < 560) {
             vVelocity = 5.0f;
@@ -41,6 +52,7 @@ public class Chick extends Actor {
         return false;
     }
 
+    @Override
     public void nextFrame(Canvas canvas) {
 
         if (this.vVelocity != null) {
@@ -52,22 +64,23 @@ public class Chick extends Actor {
         if (getGroundHitbox() > groundLevel) {
             this.vVelocity = null;
             // 50 for the size
-            this.setY(groundLevel - 50);
+            y = groundLevel - height;
+            setState(ChickState.RUNNING);
         }
 
         draw(canvas);
     }
 
     public void draw(Canvas canvas) {
+        canvas.drawRect(x, y, x + width, y + height, paint);
+
         Paint p = new Paint();
-        p.setColor(Color.RED);
-        canvas.drawRect(getX(), getY() + 50, getX() + 50, getY(), p);
         p.setColor(Color.WHITE);
         canvas.drawText("Y = " + getY() + " V = " + vVelocity, getX(), getY(), p);
     }
 
     private float getGroundHitbox() {
-        return getY() + 50;
+        return getY() + height;
     }
 
     public void setGroundLevel(int groundLevel) {
