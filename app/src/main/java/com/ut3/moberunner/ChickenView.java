@@ -5,15 +5,19 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.MediaRecorder;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.Manifest;
 
 import com.ut3.moberunner.actors.Actor;
 import com.ut3.moberunner.actors.Chick;
+import com.ut3.moberunner.actors.Fire;
 import com.ut3.moberunner.actors.Spike;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -34,6 +38,7 @@ public class ChickenView extends View {
     // 60fps
     final long UPDATE_TIME = 1000 / 60;
     float speed = 10;
+    private double audiolevel = 0;
 
     public ChickenView(Context context) {
         super(context);
@@ -58,15 +63,53 @@ public class ChickenView extends View {
         scorePaint.setColor(Color.WHITE);
         scorePaint.setTextSize(40);
 
+        startRecording();
 
+    }
+
+    private void startRecording(){
+
+        MediaRecorder recorder = new MediaRecorder();
+        recorder.reset();
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        recorder.setOutputFile(this.getContext().getCacheDir().getAbsolutePath() + "/audio.3gp");
+
+        Thread thread = new Thread(() -> {
+            try {
+                recorder.prepare();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            recorder.start();
+            while (true) {
+                int amplitude = recorder.getMaxAmplitude();
+                if (amplitude > 0) {
+                    audiolevel = 20 * Math.log10(amplitude / 32767.0);
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         boolean doSpawnSpike = random.nextInt(100) > 98;
+        boolean doSpawnFire = random.nextInt(100) > 98;
+
         if (chick.getState() != Chick.ChickState.DEAD && doSpawnSpike) {
-            actors.add(new Spike(speed, getWidth(), groundLevel));
+            //actors.add(new Spike(speed, getWidth(), groundLevel));
+        }
+        if (chick.getState() != Chick.ChickState.DEAD && doSpawnFire) {
+            actors.add(new Fire(speed, getWidth(), groundLevel));
         }
 
         if (chick.getState() == Chick.ChickState.DEAD) {
@@ -106,8 +149,18 @@ public class ChickenView extends View {
     }
 
     private void handleActor(Actor actor, Canvas canvas) {
+
+        if(actor instanceof  Fire){
+            Fire fire = (Fire) actor;
+            fire.setState(audiolevel);
+            if(fire.getState() == Fire.FireState.EXTINGUISH){
+                actor.nextFrame(canvas);
+                return;
+            }
+        }
+
         actor.nextFrame(canvas);
-        if (actor.isCollidingWith(chick)) {
+        if(actor.isCollidingWith(chick)) {
             Log.d("DEV", "Collision");
             chick.paint.setARGB(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
             chick.setState(Chick.ChickState.DEAD);
@@ -144,4 +197,5 @@ public class ChickenView extends View {
         }
         return false;
     }
+
 }
