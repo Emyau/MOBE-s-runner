@@ -23,14 +23,17 @@ import com.ut3.moberunner.actors.Spike;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 public class ChickenView extends View {
 
     private final float CHICK_X = 50;
     private Chick chick;
-    private LinkedList<Actor> actors = new LinkedList<>();
+    private LinkedList<Actor> actorList = new LinkedList<>(); // list of active non-chick actors (obstacles)
     private int score = 0;
+
+    private ActorManager actorManager = new ActorManager(actorList);
 
     private Paint scorePaint;
 
@@ -135,13 +138,14 @@ public class ChickenView extends View {
         }
         if (chick.getState() != Chick.ChickState.DEAD && doSpawnRock ) {
             actors.add(new Rock(speed, getWidth(), groundLevel));
+            actorList.add(new Spike(speed, getWidth(), groundLevel));
         }
         if (chick.getState() != Chick.ChickState.DEAD && doSpawnFire) {
             actors.add(new Fire(speed, getWidth(), groundLevel, getContext()));
         }
 
         if (chick.getState() == Chick.ChickState.DEAD) {
-            actors.clear();
+            actorList.clear();
         }
 
         drawGround(canvas);
@@ -173,7 +177,7 @@ public class ChickenView extends View {
     }
 
     private void handleActors(Canvas canvas) {
-        actors.forEach(actor -> handleActor(actor, canvas));
+        actorList.forEach(actor -> handleActor(actor, canvas));
     }
 
     private void handleActor(Actor actor, Canvas canvas) {
@@ -193,6 +197,7 @@ public class ChickenView extends View {
             chick.paint.setARGB(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
             chick.setState(Chick.ChickState.DEAD);
         }
+        actorManager.handleActor(actor, canvas, chick);
     }
 
     private void updateScore(Canvas canvas) {
