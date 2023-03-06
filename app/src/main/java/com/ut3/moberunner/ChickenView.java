@@ -5,6 +5,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -12,6 +16,7 @@ import android.view.View;
 
 import com.ut3.moberunner.actors.Actor;
 import com.ut3.moberunner.actors.Chick;
+import com.ut3.moberunner.actors.Rock;
 import com.ut3.moberunner.actors.Spike;
 
 import java.util.LinkedList;
@@ -31,9 +36,27 @@ public class ChickenView extends View {
     private Runnable runnable;
     private Random random = new Random();
 
+    private SensorManager sm;
+    private SensorEventListener listener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+        // The acceleration may be negative, so take their absolute value
+            accelXValue = Math.abs(event.values[0]);
+            accelYValue = Math.abs(event.values[1]);
+            accelZValue = Math.abs(event.values[2]);
+        }
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            //not used
+        }
+    };
+
     // 60fps
     final long UPDATE_TIME = 1000 / 60;
     float speed = 10;
+    float accelXValue = 0;
+    float accelYValue = 0;
+    float accelZValue = 0;
 
     public ChickenView(Context context) {
         super(context);
@@ -58,17 +81,24 @@ public class ChickenView extends View {
         scorePaint.setColor(Color.WHITE);
         scorePaint.setTextSize(40);
 
-
+        sm = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
+        Sensor sensor = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sm.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
+
+
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         boolean doSpawnSpike = random.nextInt(100) > 98;
+        boolean doSpawnRock = random.nextInt(100) > 98;
         if (chick.getState() != Chick.ChickState.DEAD && doSpawnSpike) {
-            actors.add(new Spike(speed, getWidth(), groundLevel));
+            //actors.add(new Spike(speed, getWidth(), groundLevel));
         }
-
+        if (chick.getState() != Chick.ChickState.DEAD && doSpawnRock ) {
+            actors.add(new Rock(speed, getWidth(), groundLevel));
+        }
         if (chick.getState() == Chick.ChickState.DEAD) {
             actors.clear();
         }
@@ -106,6 +136,16 @@ public class ChickenView extends View {
     }
 
     private void handleActor(Actor actor, Canvas canvas) {
+
+        if(actor instanceof  Rock){
+            Rock rock = (Rock) actor;
+            rock.setState(accelXValue, accelYValue, accelZValue);
+            if(rock.getState() == Rock.RockState.DOWN){
+                actor.nextFrame(canvas);
+                return;
+            }
+        }
+
         actor.nextFrame(canvas);
         if (actor.isCollidingWith(chick)) {
             Log.d("DEV", "Collision");
