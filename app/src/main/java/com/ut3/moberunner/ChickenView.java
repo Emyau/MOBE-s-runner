@@ -6,6 +6,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.MediaRecorder;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -35,6 +39,21 @@ public class ChickenView extends View {
     private Runnable runnable;
     private Random random = new Random();
 
+    private SensorManager sm;
+    private SensorEventListener listener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+        // The acceleration may be negative, so take their absolute value
+            accelXValue = Math.abs(event.values[0]);
+            accelYValue = Math.abs(event.values[1]);
+            accelZValue = Math.abs(event.values[2]);
+        }
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            //not used
+        }
+    };
+
     // 60fps
     final long UPDATE_TIME = 1000 / 60;
     float speed = 10;
@@ -62,6 +81,10 @@ public class ChickenView extends View {
         scorePaint.setTextAlign(Paint.Align.CENTER);
         scorePaint.setColor(Color.WHITE);
         scorePaint.setTextSize(40);
+
+        sm = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
+        Sensor sensor = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sm.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
 
         startRecording();
 
@@ -99,6 +122,8 @@ public class ChickenView extends View {
         thread.start();
     }
 
+
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -106,7 +131,10 @@ public class ChickenView extends View {
         boolean doSpawnFire = random.nextInt(100) > 98;
 
         if (chick.getState() != Chick.ChickState.DEAD && doSpawnSpike) {
-            actors.add(new Spike(speed, getWidth(), groundLevel));
+            //actors.add(new Spike(speed, getWidth(), groundLevel));
+        }
+        if (chick.getState() != Chick.ChickState.DEAD && doSpawnRock ) {
+            actors.add(new Rock(speed, getWidth(), groundLevel));
         }
         if (chick.getState() != Chick.ChickState.DEAD && doSpawnFire) {
             actors.add(new Fire(speed, getWidth(), groundLevel, getContext()));
