@@ -38,7 +38,7 @@ public class ChickenView extends View {
     // 60fps
     final long UPDATE_TIME = 1000 / 60;
     float speed = 10;
-    private double audiolevel = 0;
+    private double audioLevel = 0;
 
     public ChickenView(Context context) {
         super(context);
@@ -86,7 +86,7 @@ public class ChickenView extends View {
             while (true) {
                 int amplitude = recorder.getMaxAmplitude();
                 if (amplitude > 0) {
-                    audiolevel = 20 * Math.log10(amplitude / 32767.0);
+                    audioLevel = 20 * Math.log10(amplitude / 32767.0);
                 }
                 try {
                     Thread.sleep(100);
@@ -106,10 +106,10 @@ public class ChickenView extends View {
         boolean doSpawnFire = random.nextInt(100) > 98;
 
         if (chick.getState() != Chick.ChickState.DEAD && doSpawnSpike) {
-            //actors.add(new Spike(speed, getWidth(), groundLevel));
+            actors.add(new Spike(speed, getWidth(), groundLevel));
         }
         if (chick.getState() != Chick.ChickState.DEAD && doSpawnFire) {
-            actors.add(new Fire(speed, getWidth(), groundLevel));
+            actors.add(new Fire(speed, getWidth(), groundLevel, getContext()));
         }
 
         if (chick.getState() == Chick.ChickState.DEAD) {
@@ -152,7 +152,7 @@ public class ChickenView extends View {
 
         if(actor instanceof  Fire){
             Fire fire = (Fire) actor;
-            fire.setState(audiolevel);
+            fire.setState(audioLevel);
             if(fire.getState() == Fire.FireState.EXTINGUISH){
                 actor.nextFrame(canvas);
                 return;

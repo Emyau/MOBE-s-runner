@@ -1,8 +1,17 @@
 package com.ut3.moberunner.actors;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
+
+import com.ut3.moberunner.R;
 
 public class Fire extends Actor {
 
@@ -19,8 +28,11 @@ public class Fire extends Actor {
     private final float spawnX;
     private final float groundLevel;
     private final Paint paint;
+    private Bitmap frames;
+    private final int nbFrames = 7;
+    private int frameIndex = 0;
 
-    public Fire(float speed, float spawnX, float groundLevel) {
+    public Fire(float speed, float spawnX, float groundLevel, Context context) {
         this.speed = speed;
         // default postion is right of the screen
         this.spawnX = spawnX;
@@ -32,16 +44,25 @@ public class Fire extends Actor {
         x = spawnX;
         y = groundLevel-height;
 
+        frames = BitmapFactory.decodeResource(context.getResources(), R.drawable.fire_sheet);
+
         paint = new Paint();
         paint.setColor(Color.RED);
     }
 
     private void draw(Canvas canvas) {
         if( state == FireState.EXTINGUISH ) {
-                paint.setColor(Color.BLUE);
-        }
+            paint.setColorFilter(null);
+            paint.setColor(Color.BLUE);
+            canvas.drawRect(x, y, x + width, groundLevel, paint);
+        } else {
+            int frameWidth = frames.getHeight();
+            int frameHeight = frames.getHeight();
+            Bitmap fireFrame = Bitmap.createBitmap(frames, frameIndex * frameWidth, 0, frameWidth, frameHeight);
+            frameIndex = (frameIndex + 1) % nbFrames;
 
-        canvas.drawRect(x, y, x + width, groundLevel, paint);
+            canvas.drawBitmap(fireFrame, x, groundLevel - frameHeight, paint);
+        }
         Paint p = new Paint();
         p.setColor(Color.WHITE);
         canvas.drawText("Y = " + y + " X = " + x, x, y, p);
@@ -52,12 +73,11 @@ public class Fire extends Actor {
     }
 
     public void setState(double level) {
-        System.out.println("audioLevel"+level);
         if(level >= 0){
             state = FireState.EXTINGUISH;
         } else {
             float hue = (float) ( (level + 50) * 2);
-            paint.setColor(Color.HSVToColor(new float[]{hue, 1f, 1f}));
+            paint.setColorFilter(new LightingColorFilter(Color.HSVToColor(new float[]{hue, 1f, 1f}),1));
         }
     }
 
