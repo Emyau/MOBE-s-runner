@@ -16,7 +16,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.Manifest;
 
-import com.ut3.moberunner.actors.Actor;
 import com.ut3.moberunner.actors.Chick;
 import com.ut3.moberunner.actors.Fire;
 import com.ut3.moberunner.actors.Spike;
@@ -29,11 +28,11 @@ import java.util.Random;
 public class ChickenView extends View {
 
     private final float CHICK_X = 50;
-    private Chick chick;
-    private LinkedList<Actor> actorList = new LinkedList<>(); // list of active non-chick actors (obstacles)
+    private Chick chick; // the one and only
     private int score = 0;
 
-    private ActorManager actorManager = new ActorManager(actorList);
+    private ActorManager actorManager;
+    private ActorGenerator actorGenerator;
 
     private Paint scorePaint;
 
@@ -79,6 +78,9 @@ public class ChickenView extends View {
         chick = new Chick(CHICK_X);
         groundLevel = (int) (getHeight() * 0.8);
         chick.setGroundLevel(groundLevel);
+
+        actorManager = new ActorManager(chick);
+        startGenerator();
 
         scorePaint = new Paint();
         scorePaint.setTextAlign(Paint.Align.CENTER);
@@ -145,7 +147,7 @@ public class ChickenView extends View {
         }
 
         if (chick.getState() == Chick.ChickState.DEAD) {
-            actorList.clear();
+            gameOver();
         }
 
         drawGround(canvas);
@@ -154,7 +156,7 @@ public class ChickenView extends View {
         handleActors(canvas);
         updateScore(canvas);
 
-        // This define une FPS of the game
+        // This define the FPS of the game
         handler.postDelayed(runnable, UPDATE_TIME);
     }
 
@@ -173,7 +175,7 @@ public class ChickenView extends View {
         Paint p = new Paint();
         p.setColor(Color.WHITE);
         p.setTextSize(20);
-        canvas.drawText("Ground level : " + groundLevel, 50, 50, p);
+        canvas.drawText("Ground level : " + groundLevel + " Chick State : " + chick.getState(), 50, 50, p);
     }
 
     private void handleActors(Canvas canvas) {
@@ -198,6 +200,7 @@ public class ChickenView extends View {
             chick.setState(Chick.ChickState.DEAD);
         }
         actorManager.handleActor(actor, canvas, chick);
+        actorManager.handleActors(canvas);
     }
 
     private void updateScore(Canvas canvas) {
@@ -217,8 +220,7 @@ public class ChickenView extends View {
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
             switch (chick.getState()) {
                 case DEAD:
-                    score = 0;
-                    chick.setState(Chick.ChickState.RUNNING);
+                    restartGame();
                     return true;
                 case RUNNING:
                     Log.d("DEV", "onTouch: JUMP");
@@ -231,4 +233,19 @@ public class ChickenView extends View {
         return false;
     }
 
+    private void startGenerator() {
+        actorGenerator = new ActorGenerator(actorManager, this);
+        new Thread(actorGenerator).start();
+    }
+
+    private void gameOver() {
+        actorGenerator.setGenerating(false);
+        actorManager.clearActors();
+    }
+
+    private void restartGame() {
+        score = 0;
+        chick.setState(Chick.ChickState.RUNNING);
+        actorGenerator.setGenerating(true);
+    }
 }
