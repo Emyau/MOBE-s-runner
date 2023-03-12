@@ -142,19 +142,6 @@ public class ChickenView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        boolean doSpawnSpike = random.nextInt(100) > 98;
-        boolean doSpawnFire = random.nextInt(100) > 98;
-
-        if (chick.getState() != Chick.ChickState.DEAD && doSpawnSpike) {
-            //actors.add(new Spike(speed, getWidth(), groundLevel));
-        }
-        if (chick.getState() != Chick.ChickState.DEAD && doSpawnRock ) {
-            actors.add(new Rock(speed, getWidth(), groundLevel));
-            actorList.add(new Spike(speed, getWidth(), groundLevel));
-        }
-        if (chick.getState() != Chick.ChickState.DEAD && doSpawnFire) {
-            actors.add(new Fire(speed, getWidth(), groundLevel, getContext()));
-        }
 
         if (chick.getState() == Chick.ChickState.DEAD) {
             gameOver();
@@ -163,7 +150,7 @@ public class ChickenView extends View {
         drawGround(canvas);
         drawChick(canvas);
         drawDebug(canvas);
-        handleActors(canvas, accelerationVector);
+        handleActors(canvas, accelerationVector, audioLevel);
         updateScore(canvas);
 
         // This define the FPS of the game
@@ -188,31 +175,8 @@ public class ChickenView extends View {
         canvas.drawText("Ground level : " + groundLevel + " Chick State : " + chick.getState(), 50, 50, p);
     }
 
-    private void handleActors(Canvas canvas) {
-        actorList.forEach(actor -> handleActor(actor, canvas));
-    }
-
-    private void handleActor(Actor actor, Canvas canvas) {
-
-        if(actor instanceof  Fire){
-            Fire fire = (Fire) actor;
-            fire.setState(audioLevel);
-            if(fire.getState() == Fire.FireState.EXTINGUISH){
-                actor.nextFrame(canvas);
-                return;
-            }
-        }
-
-        actor.nextFrame(canvas);
-        if(actor.isCollidingWith(chick)) {
-            Log.d("DEV", "Collision");
-            chick.paint.setARGB(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
-            chick.setState(Chick.ChickState.DEAD);
-        }
-        actorManager.handleActor(actor, canvas, chick);
-        actorManager.handleActors(canvas);
-    private void handleActors(Canvas canvas, AccelerationVector accelerationVector) {
-        actorManager.handleActors(canvas, accelerationVector);
+    private void handleActors(Canvas canvas, AccelerationVector accelerationVector, double audioLevel) {
+        actorManager.handleActors(canvas, accelerationVector, audioLevel);
     }
 
     private void updateScore(Canvas canvas) {

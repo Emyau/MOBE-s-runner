@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.ut3.moberunner.actors.Actor;
 import com.ut3.moberunner.actors.Chick;
+import com.ut3.moberunner.actors.Fire;
 import com.ut3.moberunner.actors.Rock;
 import com.ut3.moberunner.actors.Spike;
 import com.ut3.moberunner.utils.AccelerationVector;
@@ -32,21 +33,29 @@ public class ActorManager {
         this.chick = chick;
     }
 
-    public void handleActors(Canvas canvas, AccelerationVector accelerationVector) {
+    public void handleActors(Canvas canvas, AccelerationVector accelerationVector, double audioLevel) {
         if(actorList.size() > 0 && !actorList.isEmpty()) {
             for(Actor actor : actorList) {
-                handleActor(actor, canvas, accelerationVector);
+                handleActor(actor, canvas, accelerationVector, audioLevel);
             }
         }
     }
 
     // Handle actor movement and collision with chick
-    private void handleActor(Actor actor, Canvas canvas, AccelerationVector accelerationVector) {
+    private void handleActor(Actor actor, Canvas canvas, AccelerationVector accelerationVector, double audioLevel) {
 
         if(actor instanceof Rock){
             Rock rock = (Rock) actor;
             rock.setState(accelerationVector);
             if(rock.getState() == Rock.RockState.DOWN){
+                despawnActor(actor);
+            }
+        }
+
+        if (actor instanceof Fire) {
+            Fire fire = (Fire) actor;
+            fire.setState(audioLevel);
+            if (fire.getState() == Fire.FireState.EXTINGUISH) {
                 despawnActor(actor);
             }
         }
