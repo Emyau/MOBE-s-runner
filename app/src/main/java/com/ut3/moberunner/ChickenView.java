@@ -102,7 +102,6 @@ public class ChickenView extends View {
         sm.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
 
         startRecording();
-
     }
 
     private void startRecording(){
