@@ -19,6 +19,7 @@ import android.Manifest;
 import com.ut3.moberunner.actors.Chick;
 import com.ut3.moberunner.actors.Fire;
 import com.ut3.moberunner.actors.Spike;
+import com.ut3.moberunner.utils.AccelerationVector;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -42,13 +43,20 @@ public class ChickenView extends View {
     private Random random = new Random();
 
     private SensorManager sm;
+    private AccelerationVector accelerationVector;
+
     private SensorEventListener listener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
-        // The acceleration may be negative, so take their absolute value
-            accelXValue = Math.abs(event.values[0]);
-            accelYValue = Math.abs(event.values[1]);
-            accelZValue = Math.abs(event.values[2]);
+            if(accelerationVector == null) {
+                accelerationVector = new AccelerationVector(Math.abs(event.values[0]),
+                        Math.abs(event.values[1]),
+                        Math.abs(event.values[2]));
+            } else {
+                accelerationVector.setAccelXValue(Math.abs(event.values[0]));
+                accelerationVector.setAccelYValue(Math.abs(event.values[1]));
+                accelerationVector.setAccelZValue(Math.abs(event.values[2]));
+            }
         }
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -78,6 +86,8 @@ public class ChickenView extends View {
         chick = new Chick(CHICK_X);
         groundLevel = (int) (getHeight() * 0.8);
         chick.setGroundLevel(groundLevel);
+
+        accelerationVector = new AccelerationVector(0,0,0);
 
         actorManager = new ActorManager(chick);
         startGenerator();
@@ -153,7 +163,7 @@ public class ChickenView extends View {
         drawGround(canvas);
         drawChick(canvas);
         drawDebug(canvas);
-        handleActors(canvas);
+        handleActors(canvas, accelerationVector);
         updateScore(canvas);
 
         // This define the FPS of the game
@@ -201,6 +211,8 @@ public class ChickenView extends View {
         }
         actorManager.handleActor(actor, canvas, chick);
         actorManager.handleActors(canvas);
+    private void handleActors(Canvas canvas, AccelerationVector accelerationVector) {
+        actorManager.handleActors(canvas, accelerationVector);
     }
 
     private void updateScore(Canvas canvas) {

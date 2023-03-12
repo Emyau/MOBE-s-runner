@@ -6,7 +6,9 @@ import android.view.View;
 
 import com.ut3.moberunner.actors.Actor;
 import com.ut3.moberunner.actors.Chick;
+import com.ut3.moberunner.actors.Rock;
 import com.ut3.moberunner.actors.Spike;
+import com.ut3.moberunner.utils.AccelerationVector;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,16 +32,25 @@ public class ActorManager {
         this.chick = chick;
     }
 
-    public void handleActors(Canvas canvas) {
+    public void handleActors(Canvas canvas, AccelerationVector accelerationVector) {
         if(actorList.size() > 0 && !actorList.isEmpty()) {
             for(Actor actor : actorList) {
-                handleActor(actor, canvas);
+                handleActor(actor, canvas, accelerationVector);
             }
         }
     }
 
     // Handle actor movement and collision with chick
-    private void handleActor(Actor actor, Canvas canvas) {
+    private void handleActor(Actor actor, Canvas canvas, AccelerationVector accelerationVector) {
+
+        if(actor instanceof Rock){
+            Rock rock = (Rock) actor;
+            rock.setState(accelerationVector);
+            if(rock.getState() == Rock.RockState.DOWN){
+                despawnActor(actor);
+            }
+        }
+
         actor.nextFrame(canvas);
         if (actor.isCollidingWith(chick)) {
             Log.d("DEV", "Collision");

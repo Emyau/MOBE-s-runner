@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.ut3.moberunner.utils.AccelerationVector;
+
 public class Rock extends Actor {
 
     public enum RockState {
@@ -61,11 +63,13 @@ public class Rock extends Actor {
         return this.state;
     }
 
-    public void setState(float accelXValue, float accelYValue, float accelZValue) {
-        if ((accelXValue > 10 && accelXValue < 15) || (accelYValue > 10 && accelYValue < 15) || (accelZValue > 10 && accelZValue < 15) ) {
+    public void setState(AccelerationVector vector) {
+        if ((vector.getAccelXValue() > 10 && vector.getAccelXValue() < 15) ||
+                (vector.getAccelYValue() > 10 && vector.getAccelYValue() < 15) ||
+                (vector.getAccelZValue() > 10 && vector.getAccelZValue() < 15) ) {
             state = RockState.MID;
         }
-        if (accelXValue > 15 || accelYValue > 15 || accelZValue > 15) {
+        if (vector.getAccelXValue() > 15 || vector.getAccelYValue() > 15 || vector.getAccelZValue() > 15) {
             state = RockState.DOWN;
         }
     }
