@@ -27,8 +27,9 @@ public class Chick extends Actor {
 
     public Paint paint;
 
-    private Bitmap framesRunning;
-    private int nbFramesRunning = 10;
+    private final int NB_FRAMES_RUNNING = 10;
+
+    private final Bitmap[] framesRunning = new Bitmap[NB_FRAMES_RUNNING];
     private int frameRunningIndex = 0;
 
     public Chick(float x, Context context) {
@@ -44,14 +45,24 @@ public class Chick extends Actor {
         gravity = 3;
         lift = 35;
 
-        framesRunning = BitmapFactory.decodeResource(context.getResources(), R.drawable.fire_sheet);
-
         paint = new Paint();
         paint.setColor(Color.RED);
 
         if (getY() < 560) {
             vVelocity = 5.0f;
         }
+
+        framesRunning[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.chick_run_00);
+        framesRunning[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.chick_run_01);
+        framesRunning[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.chick_run_02);
+        framesRunning[3] = BitmapFactory.decodeResource(context.getResources(), R.drawable.chick_run_03);
+        framesRunning[4] = BitmapFactory.decodeResource(context.getResources(), R.drawable.chick_run_04);
+        framesRunning[5] = BitmapFactory.decodeResource(context.getResources(), R.drawable.chick_run_05);
+        framesRunning[6] = BitmapFactory.decodeResource(context.getResources(), R.drawable.chick_run_06);
+        framesRunning[7] = BitmapFactory.decodeResource(context.getResources(), R.drawable.chick_run_07);
+        framesRunning[8] = BitmapFactory.decodeResource(context.getResources(), R.drawable.chick_run_08);
+        framesRunning[9] = BitmapFactory.decodeResource(context.getResources(), R.drawable.chick_run_09);
+
     }
 
 
@@ -79,11 +90,18 @@ public class Chick extends Actor {
             setState(ChickState.RUNNING);
         }
 
+        frameRunningIndex ++;
+        if (frameRunningIndex == 10) {
+            frameRunningIndex = 0;
+        }
+
         draw(canvas);
     }
 
     public void draw(Canvas canvas) {
-        canvas.drawRect(x, y, x + width, y + height, paint);
+        //canvas.drawRect(x, y, x + width, y + height, paint);
+
+        canvas.drawBitmap(framesRunning[frameRunningIndex], x, y, null);
 
         Paint p = new Paint();
         p.setColor(Color.WHITE);
