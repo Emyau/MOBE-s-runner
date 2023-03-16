@@ -36,15 +36,15 @@ public class Rock extends Actor {
         this.state = RockState.UP;
 
         height = 200;
-        width = 20;
+        width = 120;
         x = spawnX;
         y = groundLevel - height;
 
         rockUP = BitmapFactory.decodeResource(context.getResources(), R.drawable.rock);
         rockMID = BitmapFactory.decodeResource(context.getResources(), R.drawable.little_rock);
 
-        rockUP = Bitmap.createScaledBitmap(rockUP, 100, 100, false);
-        rockMID = Bitmap.createScaledBitmap(rockMID, 100, 100, false);
+        rockUP = Bitmap.createScaledBitmap(rockUP, 120, 120, false);
+        rockMID = Bitmap.createScaledBitmap(rockMID, 120, 120, false);
 
         toUse = rockUP;
     }

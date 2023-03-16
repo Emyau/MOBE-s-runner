@@ -20,7 +20,7 @@ public class Gate extends Actor {
         this.spawnX = spawnX;
         this.groundLevel = groundLevel;
 
-        height = 200;
+        height = 300;
         width = 10;
         x1 = spawnX;
         x = spawnX;
