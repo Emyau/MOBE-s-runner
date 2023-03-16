@@ -23,7 +23,7 @@ public class Gate extends Actor {
         x1 = spawnX;
         x = spawnX;
         y1 = groundLevel;
-        y = groundLevel-height;
+        y = groundLevel - height;
 
         paint = new Paint();
         paint.setColor(Color.YELLOW);
@@ -43,9 +43,9 @@ public class Gate extends Actor {
     }
 
     public void setState(float rotaZ) {
-        x = x1 + rotaZ*300;
-        y = (float) -(Math.sqrt(100*100 - (x1-x)*(x1-x))) + y1;
-        if (y <0 ) {
+        x = x1 + rotaZ * 300;
+        y = (float) -(Math.sqrt(100 * 100 - (x1 - x) * (x1 - x))) + y1;
+        if (y < 0) {
             y = groundLevel;
         }
     }
