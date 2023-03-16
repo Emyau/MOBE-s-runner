@@ -26,9 +26,6 @@ public abstract class Actor {
     public boolean isCollidingWith(Actor actor) {
         RectF myRect = new RectF(x, y, x + width, y + height);
         RectF actorRect = new RectF(actor.x, actor.y, actor.x + actor.width, actor.y + actor.height);
-        if (Math.abs(x - actor.x) < 50) {
-            Log.d("DEV", "isCollidingWith: proche");
-        }
         return myRect.intersect(actorRect);
     }
 

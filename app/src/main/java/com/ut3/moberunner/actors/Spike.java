@@ -25,21 +25,18 @@ public class Spike extends Actor {
         this.groundLevel = groundLevel;
 
         height = 100;
-        width = 20;
+        width = 75;
         x = spawnX;
         y = groundLevel - height;
 
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.fire_sheet);
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.spike_pixel);
 
         paint = new Paint();
         paint.setColor(Color.GREEN);
     }
 
     private void draw(Canvas canvas) {
-        canvas.drawRect(x, y, x + width, groundLevel, paint);
-        Paint p = new Paint();
-        p.setColor(Color.WHITE);
-        canvas.drawText("Y = " + y + " X = " + x, x, y, p);
+        canvas.drawBitmap(Bitmap.createScaledBitmap(bitmap,width+5,height,false), x, y, paint);
     }
 
     @Override
