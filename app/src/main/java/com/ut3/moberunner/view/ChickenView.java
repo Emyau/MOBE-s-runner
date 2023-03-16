@@ -24,11 +24,8 @@ import com.ut3.moberunner.actors.Chick;
 import com.ut3.moberunner.sensorhandlers.MicroHandler;
 import com.ut3.moberunner.utils.AccelerationVector;
 
-import java.util.Random;
-
 public class ChickenView extends View {
 
-    private final float CHICK_X = 50;
     private Chick chick; // the one and only
     private int score = 0;
 
@@ -40,14 +37,12 @@ public class ChickenView extends View {
     private Paint scorePaint;
 
     private int groundLevel;
-    private Handler handler;
-    private Runnable runnable;
-    private Random random = new Random();
+    private final Handler handler;
+    private final Runnable runnable;
 
-    private SensorManager sm;
     private AccelerationVector accelerationVector;
 
-    private SensorEventListener listenerAccel = new SensorEventListener() {
+    private final SensorEventListener listenerAccel = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
             if (accelerationVector == null) {
@@ -67,7 +62,7 @@ public class ChickenView extends View {
         }
     };
 
-    private SensorEventListener listenerGyro = new SensorEventListener() {
+    private final SensorEventListener listenerGyro = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
             // The acceleration may be negative, so take their absolute value
@@ -82,9 +77,6 @@ public class ChickenView extends View {
 
     // 60fps
     final long UPDATE_TIME = 1000 / 60;
-    float speed = 10;
-    private boolean isRecording;
-    private double audioLevel = 0;
     float rotaZ = 0;
 
     public ChickenView(Context context) {
@@ -113,6 +105,7 @@ public class ChickenView extends View {
     }
 
     private void setupGame() {
+        float CHICK_X = 50;
         chick = new Chick(CHICK_X);
         groundLevel = (int) (getHeight() * 0.8);
         chick.setGroundLevel(groundLevel);
@@ -127,7 +120,7 @@ public class ChickenView extends View {
         scorePaint.setColor(Color.WHITE);
         scorePaint.setTextSize(40);
 
-        sm = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
+        SensorManager sm = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         Sensor sensorAccel = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sm.registerListener(listenerAccel, sensorAccel, SensorManager.SENSOR_DELAY_NORMAL);
         Sensor sensorGyro = sm.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
@@ -140,18 +133,17 @@ public class ChickenView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         long startTime = System.nanoTime();
+
         if (chick.getState() == Chick.ChickState.DEAD) {
             gameOver();
+        } else {
+            drawChick(canvas);
+            drawDebug(canvas);
+            actorManager.handleActors(canvas, accelerationVector, microHandler.getAudioLevel());
         }
 
         drawGround(canvas);
-        drawChick(canvas);
-        drawDebug(canvas);
-
-        // TODO: appeler directemnt la méthode de l'actorManager ici
-        actorManager.handleActors(canvas, accelerationVector, microHandler.getAudioLevel(), rotaZ);
         updateScore(canvas);
 
         long stopTime = System.nanoTime();
@@ -236,7 +228,7 @@ public class ChickenView extends View {
         if (score > highestScore) {
             System.out.println("New High Score : " + score);
             editor.putLong("highestScore", score);
-            editor.commit();
+            editor.apply();
         }
     }
 }
