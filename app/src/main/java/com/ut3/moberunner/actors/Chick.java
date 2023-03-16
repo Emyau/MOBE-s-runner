@@ -39,8 +39,8 @@ public class Chick extends Actor {
         // Dimension
         this.x = x;
         y = 100;
-        height = 50;
-        width = 50;
+        height = 100;
+        width = 100;
 
         gravity = 3;
         lift = 35;
@@ -90,7 +90,7 @@ public class Chick extends Actor {
             setState(ChickState.RUNNING);
         }
 
-        frameRunningIndex ++;
+        frameRunningIndex++;
         if (frameRunningIndex == 10) {
             frameRunningIndex = 0;
         }
@@ -99,13 +99,8 @@ public class Chick extends Actor {
     }
 
     public void draw(Canvas canvas) {
-        //canvas.drawRect(x, y, x + width, y + height, paint);
-
-        canvas.drawBitmap(framesRunning[frameRunningIndex], x, y, null);
-
-        Paint p = new Paint();
-        p.setColor(Color.WHITE);
-        canvas.drawText("Y = " + getY() + " V = " + vVelocity, getX(), getY(), p);
+        Bitmap b = Bitmap.createScaledBitmap(framesRunning[frameRunningIndex], getWidth(), getHeight(), false);
+        canvas.drawBitmap(b, x, y, null);
     }
 
     private float getGroundHitbox() {

@@ -28,8 +28,6 @@ import com.ut3.moberunner.actors.Chick;
 import com.ut3.moberunner.sensorhandlers.MicroHandler;
 import com.ut3.moberunner.utils.AccelerationVector;
 
-import java.lang.reflect.Type;
-
 public class ChickenView extends View {
 
     private Chick chick; // the one and only
@@ -126,7 +124,7 @@ public class ChickenView extends View {
 
         scorePaint = new Paint();
         scorePaint.setTextAlign(Paint.Align.CENTER);
-        scorePaint.setColor(Color.WHITE);
+        scorePaint.setColor(Color.BLACK);
         scorePaint.setTextSize(40);
         Typeface typeface = getResources().getFont(R.font.bowlby_one);
         scorePaint.setTypeface(typeface);
@@ -146,18 +144,13 @@ public class ChickenView extends View {
         super.onDraw(canvas);
         long startTime = System.nanoTime();
 
+        scrollBackground(canvas);
         if (chick.getState() == Chick.ChickState.DEAD) {
             gameOver();
         } else {
             drawChick(canvas);
-            drawDebug(canvas);
             actorManager.handleActors(canvas, accelerationVector, microHandler.getAudioLevel(), rotaZ);
         }
-
-        scrollBackground(canvas);
-        drawChick(canvas);
-        drawDebug(canvas);
-
         actorManager.handleActors(canvas, accelerationVector, microHandler.getAudioLevel(), rotaZ);
         updateScore(canvas);
 
@@ -173,13 +166,6 @@ public class ChickenView extends View {
 
     private void drawChick(Canvas canvas) {
         chick.nextFrame(canvas);
-    }
-
-    private void drawDebug(Canvas canvas) {
-        Paint p = new Paint();
-        p.setColor(Color.WHITE);
-        p.setTextSize(20);
-        canvas.drawText("Ground level : " + groundLevel + " Chick State : " + chick.getState(), 50, 50, p);
     }
 
     private void updateScore(Canvas canvas) {
@@ -239,6 +225,7 @@ public class ChickenView extends View {
             editor.apply();
         }
     }
+
     private void displayBackground() {
         background = BitmapFactory.decodeResource(getResources(), R.drawable.chick_background);
         background = Bitmap.createScaledBitmap(background, getWidth(), getHeight(), false);
@@ -246,11 +233,11 @@ public class ChickenView extends View {
 
     private void scrollBackground(Canvas canvas) {
         backgroundX -= 10;
-        if(backgroundX < -getWidth()) {
+        if (backgroundX < -getWidth()) {
             backgroundX = 0;
         }
         canvas.drawBitmap(background, backgroundX, 0, null);
-        if(backgroundX < getWidth()) {
+        if (backgroundX < getWidth()) {
             canvas.drawBitmap(background, backgroundX + getWidth(), 0, null);
         }
     }
