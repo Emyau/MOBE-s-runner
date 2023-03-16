@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -18,11 +19,14 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.ut3.moberunner.R;
 import com.ut3.moberunner.actorhandlers.ActorGenerator;
 import com.ut3.moberunner.actorhandlers.ActorManager;
 import com.ut3.moberunner.actors.Chick;
 import com.ut3.moberunner.sensorhandlers.MicroHandler;
 import com.ut3.moberunner.utils.AccelerationVector;
+
+import java.lang.reflect.Type;
 
 public class ChickenView extends View {
 
@@ -119,6 +123,8 @@ public class ChickenView extends View {
         scorePaint.setTextAlign(Paint.Align.CENTER);
         scorePaint.setColor(Color.WHITE);
         scorePaint.setTextSize(40);
+        Typeface typeface = getResources().getFont(R.font.bowlby_one);
+        scorePaint.setTypeface(typeface);
 
         SensorManager sm = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         Sensor sensorAccel = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
