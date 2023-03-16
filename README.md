@@ -44,7 +44,14 @@ Un APK déjà compilé est disponible dans la page release du dépot. Pour le la
 - Lancer app sur un appareil avec le mode développeur activé
 
 ## **Licence des assets**
-Tous les assets de l'application ont soit été produits par l'équipe, soit importés et/ou modifiés depuis ce site :
+Tous les assets de l'application ont soit été produits par l'équipe, soit importés et modifiés depuis ce site :
 https://opengameart.org/
 
 Les assets de ce site sont libres d'utilisation : https://opengameart.org/content/faq#q-proprietary
+
+Assets sous licence CC BY 3.0 https://creativecommons.org/licenses/by/3.0/ et/ou CC BY 4.0 https://creativecommons.org/licenses/by/4.0/
+- Version modifiée de Rock Pile par FunWithPixels : https://opengameart.org/content/rock-pile (CC BY 3.0)
+- Version modifiée de 2D Pixel Fire Sprite Strip par Color Optimist : https://opengameart.org/content/2d-pixel-fire-sprite-strip (CC BY 3.0 et 4.0)
+- Version modifiée de bevouliin Free Beach game background for game developers par bevouiliin : https://opengameart.org/content/bevouliin-free-beach-game-background-for-game-developers (CC BY 3.0)
+
+Assets du poussin produits par l'équipe
