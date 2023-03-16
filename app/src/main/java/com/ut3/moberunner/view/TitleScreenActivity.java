@@ -1,14 +1,15 @@
-package com.ut3.moberunner;
+package com.ut3.moberunner.view;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.ut3.moberunner.R;
 
 public class TitleScreenActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.ut3.moberunner;
+package com.ut3.moberunner.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,7 +15,9 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import com.ut3.moberunner.actors.Actor;
+
+import com.ut3.moberunner.ActorGenerator;
+import com.ut3.moberunner.ActorManager;
 import com.ut3.moberunner.actors.Chick;
 import com.ut3.moberunner.sensorhandlers.MicroHandler;
 import com.ut3.moberunner.utils.AccelerationVector;
@@ -69,6 +71,7 @@ public class ChickenView extends View {
             // The acceleration may be negative, so take their absolute value
             rotaZ = event.values[2];
         }
+
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
             //not used

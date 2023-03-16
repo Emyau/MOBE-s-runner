@@ -1,15 +1,13 @@
-package com.ut3.moberunner;
+package com.ut3.moberunner.view;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.content.Intent;
 import android.Manifest;
 import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+
+import com.ut3.moberunner.view.TitleScreenActivity;
 
 public class MainActivity extends AppCompatActivity {
 
