@@ -49,4 +49,5 @@ public class Gate extends Actor {
             y = groundLevel;
         }
     }
+
 }

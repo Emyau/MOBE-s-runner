@@ -151,7 +151,7 @@ public class ChickenView extends View {
         drawDebug(canvas);
 
         // TODO: appeler directemnt la méthode de l'actorManager ici
-        actorManager.handleActors(canvas, accelerationVector, microHandler.getAudioLevel());
+        actorManager.handleActors(canvas, accelerationVector, microHandler.getAudioLevel(), rotaZ);
         updateScore(canvas);
 
         long stopTime = System.nanoTime();
