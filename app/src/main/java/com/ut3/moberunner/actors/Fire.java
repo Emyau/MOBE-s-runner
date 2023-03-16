@@ -17,29 +17,26 @@ public class Fire extends Actor {
         EXTINGUISH
     }
 
-    private float audioLevel = 0;
     private FireState state;
 
 
     private final float speed;
-    private final float spawnX;
     private final float groundLevel;
     private final Paint paint;
-    private Bitmap frames;
+    private final Bitmap frames;
     private final int nbFrames = 7;
     private int frameIndex = 0;
 
     public Fire(float speed, float spawnX, float groundLevel, Context context) {
         this.speed = speed;
-        // default postion is right of the screen
-        this.spawnX = spawnX;
+        // default position is right of the screen
         this.groundLevel = groundLevel;
         this.state = FireState.BURNING;
 
         height = 200;
         width = 20;
         x = spawnX;
-        y = groundLevel - height;
+        y = groundLevel-height;
 
         frames = BitmapFactory.decodeResource(context.getResources(), R.drawable.fire_sheet);
 
@@ -48,7 +45,7 @@ public class Fire extends Actor {
     }
 
     private void draw(Canvas canvas) {
-        if (state == FireState.EXTINGUISH) {
+        if( state == FireState.EXTINGUISH ) {
             paint.setColorFilter(null);
             paint.setColor(Color.BLUE);
             canvas.drawRect(x, y, x + width, groundLevel, paint);
@@ -70,11 +67,11 @@ public class Fire extends Actor {
     }
 
     public void setState(double level) {
-        if (level >= 0) {
+        if(level >= -10){
             state = FireState.EXTINGUISH;
         } else {
-            float hue = (float) ((level + 50) * 2);
-            paint.setColorFilter(new LightingColorFilter(Color.HSVToColor(new float[]{hue, 1f, 1f}), 1));
+            float hue = (float) ( (level + 50) * 2);
+            paint.setColorFilter(new LightingColorFilter(Color.HSVToColor(new float[]{hue, 1f, 1f}),1));
         }
     }
 
