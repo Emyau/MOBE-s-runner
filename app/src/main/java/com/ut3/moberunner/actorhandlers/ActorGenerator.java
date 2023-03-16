@@ -3,7 +3,6 @@ package com.ut3.moberunner.actorhandlers;
 import android.view.View;
 
 import com.ut3.moberunner.actors.Actor;
-import com.ut3.moberunner.actors.Fire;
 import com.ut3.moberunner.actors.Gate;
 import com.ut3.moberunner.actors.Rock;
 import com.ut3.moberunner.actors.Spike;
@@ -62,14 +61,14 @@ public class ActorGenerator implements Runnable {
         // Create an actor based on number
         switch (actorTypeId) {
             case (0):
-                System.out.println("0, generating Spike");
-                return new Spike(10, view.getWidth(), (int) (view.getHeight() * 0.8));
+                System.out.println("1, generating Rock");
+                return new Rock(10, view.getWidth(), (int) (view.getHeight() * 0.8),view.getContext());
             case (1):
                 System.out.println("1, generating Rock");
-                return new Rock(10, view.getWidth(), (int) (view.getHeight() * 0.8));
+                return new Rock(10, view.getWidth(), (int) (view.getHeight() * 0.8), view.getContext());
             case (2):
-                System.out.println("1, generating Fire");
-                return new Fire(10, view.getWidth(), (int) (view.getHeight() * 0.8), view.getContext());
+                System.out.println("1, generating Gate");
+                return new Gate(10, view.getWidth(), (int) (view.getHeight() * 0.8));
             case (3):
                 System.out.println("1, generating Gate");
                 return new Gate(10, view.getWidth(), (int) (view.getHeight() * 0.8));
