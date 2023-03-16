@@ -32,15 +32,15 @@ public class ActorGenerator implements Runnable {
 
     @Override
     public void run() {
-        while(true) {
+        while (true) {
             generateActors();
         }
     }
 
     public void generateActors() {
-        if(isGenerating) {
+        if (isGenerating) {
             // If there are no actors, generate one right away
-            if(actorManager.getActorList().isEmpty()) { //obligé de mettre les deux conditions ?
+            if (actorManager.getActorList().isEmpty()) { //obligé de mettre les deux conditions ?
                 actorManager.addActor(generateRandomActor());
             }
             // Create a random delay for the next random actor
@@ -60,18 +60,18 @@ public class ActorGenerator implements Runnable {
         int actorTypeId = random.nextInt(MAX_ACTOR_ID);
         // Create an actor based on number
         switch (actorTypeId) {
-            case(0) :
+            case (0):
                 System.out.println("0, generating Spike");
-                return new Spike(10,view.getWidth(), (int) (view.getHeight() * 0.8));
-            case(1) :
+                return new Spike(10, view.getWidth(), (int) (view.getHeight() * 0.8));
+            case (1):
                 System.out.println("1, generating Rock");
-                return new Rock(10,view.getWidth(), (int) (view.getHeight() * 0.8));
-            case(2) :
+                return new Rock(10, view.getWidth(), (int) (view.getHeight() * 0.8));
+            case (2):
                 System.out.println("1, generating Fire");
-                return new Fire(10,view.getWidth(), (int) (view.getHeight() * 0.8), view.getContext());
+                return new Fire(10, view.getWidth(), (int) (view.getHeight() * 0.8), view.getContext());
             default:
                 System.out.println("Unknown number, generating Spike");
-                return new Spike(10,view.getWidth(), (int) (view.getHeight() * 0.8));
+                return new Spike(10, view.getWidth(), (int) (view.getHeight() * 0.8));
         }
     }
 

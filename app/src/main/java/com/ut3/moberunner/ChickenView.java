@@ -5,25 +5,20 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.media.MediaRecorder;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaRecorder;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.Manifest;
 
 import com.ut3.moberunner.actors.Chick;
-import com.ut3.moberunner.actors.Fire;
-import com.ut3.moberunner.actors.Spike;
 import com.ut3.moberunner.utils.AccelerationVector;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 
 public class ChickenView extends View {
@@ -48,7 +43,7 @@ public class ChickenView extends View {
     private SensorEventListener listener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
-            if(accelerationVector == null) {
+            if (accelerationVector == null) {
                 accelerationVector = new AccelerationVector(Math.abs(event.values[0]),
                         Math.abs(event.values[1]),
                         Math.abs(event.values[2]));
@@ -58,6 +53,7 @@ public class ChickenView extends View {
                 accelerationVector.setAccelZValue(Math.abs(event.values[2]));
             }
         }
+
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
             //not used
@@ -87,7 +83,7 @@ public class ChickenView extends View {
         groundLevel = (int) (getHeight() * 0.8);
         chick.setGroundLevel(groundLevel);
 
-        accelerationVector = new AccelerationVector(0,0,0);
+        accelerationVector = new AccelerationVector(0, 0, 0);
 
         actorManager = new ActorManager(chick);
         startGenerator();
@@ -104,7 +100,7 @@ public class ChickenView extends View {
         startRecording();
     }
 
-    private void startRecording(){
+    private void startRecording() {
 
         MediaRecorder recorder = new MediaRecorder();
         recorder.reset();
@@ -137,7 +133,6 @@ public class ChickenView extends View {
     }
 
 
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -149,7 +144,7 @@ public class ChickenView extends View {
         drawGround(canvas);
         drawChick(canvas);
         drawDebug(canvas);
-        //appeler directemnt la méthode de l'actorManager ici
+        // TODO: appeler directemnt la méthode de l'actorManager ici
         actorManager.handleActors(canvas, accelerationVector, audioLevel);
         updateScore(canvas);
 

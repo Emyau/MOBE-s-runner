@@ -11,7 +11,7 @@ public class Rock extends Actor {
     public enum RockState {
         UP,
         MID,
-         DOWN
+        DOWN
     }
 
     private RockState state;
@@ -31,25 +31,23 @@ public class Rock extends Actor {
         height = 100;
         width = 20;
         x = spawnX;
-        y = groundLevel-height;
+        y = groundLevel - height;
 
         paint = new Paint();
         paint.setColor(Color.GRAY);
     }
 
     private void draw(Canvas canvas) {
-        //gestion des états ici
-        if (state == RockState.MID) {
-            y = groundLevel - height/2;
-        }
-        if (state == RockState.DOWN) {
-            x = 0;
-            y = groundLevel;
+        switch (state) {
+            case MID:
+                y = groundLevel - height / 2;
+                break;
+            case DOWN:
+                x = 0;
+                y = groundLevel;
+                break;
         }
         canvas.drawOval(x, y, x + width, groundLevel, paint);
-        //Paint p = new Paint();
-        //p.setColor(Color.WHITE);
-        //canvas.drawText("Y = " + y + " X = " + x, x, y, p);
     }
 
     @Override
@@ -64,11 +62,13 @@ public class Rock extends Actor {
     }
 
     public void setState(AccelerationVector vector) {
+        // Small shake check
         if ((vector.getAccelXValue() > 10 && vector.getAccelXValue() < 15) ||
                 (vector.getAccelYValue() > 10 && vector.getAccelYValue() < 15) ||
-                (vector.getAccelZValue() > 10 && vector.getAccelZValue() < 15) ) {
+                (vector.getAccelZValue() > 10 && vector.getAccelZValue() < 15)) {
             state = RockState.MID;
         }
+        // Big shake check
         if (vector.getAccelXValue() > 15 || vector.getAccelYValue() > 15 || vector.getAccelZValue() > 15) {
             state = RockState.DOWN;
         }

@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-public class Spike extends Actor{
+public class Spike extends Actor {
 
     private float speed;
     private float spawnX;
@@ -21,7 +21,7 @@ public class Spike extends Actor{
         height = 100;
         width = 20;
         x = spawnX;
-        y = groundLevel-height;
+        y = groundLevel - height;
 
         paint = new Paint();
         paint.setColor(Color.GREEN);
@@ -40,8 +40,6 @@ public class Spike extends Actor{
         x -= speed;
         draw(canvas);
     }
-
-
 
 
 }

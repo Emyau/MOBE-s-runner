@@ -5,9 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 
@@ -42,7 +39,7 @@ public class Fire extends Actor {
         height = 200;
         width = 20;
         x = spawnX;
-        y = groundLevel-height;
+        y = groundLevel - height;
 
         frames = BitmapFactory.decodeResource(context.getResources(), R.drawable.fire_sheet);
 
@@ -51,7 +48,7 @@ public class Fire extends Actor {
     }
 
     private void draw(Canvas canvas) {
-        if( state == FireState.EXTINGUISH ) {
+        if (state == FireState.EXTINGUISH) {
             paint.setColorFilter(null);
             paint.setColor(Color.BLUE);
             canvas.drawRect(x, y, x + width, groundLevel, paint);
@@ -73,11 +70,11 @@ public class Fire extends Actor {
     }
 
     public void setState(double level) {
-        if(level >= 0){
+        if (level >= 0) {
             state = FireState.EXTINGUISH;
         } else {
-            float hue = (float) ( (level + 50) * 2);
-            paint.setColorFilter(new LightingColorFilter(Color.HSVToColor(new float[]{hue, 1f, 1f}),1));
+            float hue = (float) ((level + 50) * 2);
+            paint.setColorFilter(new LightingColorFilter(Color.HSVToColor(new float[]{hue, 1f, 1f}), 1));
         }
     }
 
