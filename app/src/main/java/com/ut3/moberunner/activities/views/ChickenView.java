@@ -3,6 +3,8 @@ package com.ut3.moberunner.activities.views;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -39,6 +41,8 @@ public class ChickenView extends View {
     private MicroHandler microHandler;
 
     private Paint scorePaint;
+    private Bitmap background;
+    private int backgroundX = 0;
 
     private int groundLevel;
     private final Handler handler;
@@ -109,9 +113,10 @@ public class ChickenView extends View {
     }
 
     private void setupGame() {
+        displayBackground();
         float CHICK_X = 50;
         chick = new Chick(CHICK_X, getContext());
-        groundLevel = (int) (getHeight() * 0.8);
+        groundLevel = (int) (getHeight() * 0.88);
         chick.setGroundLevel(groundLevel);
 
         accelerationVector = new AccelerationVector(0, 0, 0);
@@ -149,7 +154,11 @@ public class ChickenView extends View {
             actorManager.handleActors(canvas, accelerationVector, microHandler.getAudioLevel(), rotaZ);
         }
 
-        drawGround(canvas);
+        scrollBackground(canvas);
+        drawChick(canvas);
+        drawDebug(canvas);
+
+        actorManager.handleActors(canvas, accelerationVector, microHandler.getAudioLevel(), rotaZ);
         updateScore(canvas);
 
         long stopTime = System.nanoTime();
@@ -160,13 +169,6 @@ public class ChickenView extends View {
         } else {
             handler.postDelayed(runnable, UPDATE_TIME - timeElapsed);
         }
-    }
-
-    private void drawGround(Canvas canvas) {
-        Paint p = new Paint();
-        p.setColor(Color.RED);
-        p.setStrokeWidth(10);
-        canvas.drawLine(0, groundLevel, canvas.getWidth(), groundLevel, p);
     }
 
     private void drawChick(Canvas canvas) {
@@ -237,4 +239,20 @@ public class ChickenView extends View {
             editor.apply();
         }
     }
+    private void displayBackground() {
+        background = BitmapFactory.decodeResource(getResources(), R.drawable.chick_background);
+        background = Bitmap.createScaledBitmap(background, getWidth(), getHeight(), false);
+    }
+
+    private void scrollBackground(Canvas canvas) {
+        backgroundX -= 10;
+        if(backgroundX < -getWidth()) {
+            backgroundX = 0;
+        }
+        canvas.drawBitmap(background, backgroundX, 0, null);
+        if(backgroundX < getWidth()) {
+            canvas.drawBitmap(background, backgroundX + getWidth(), 0, null);
+        }
+    }
+
 }

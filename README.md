@@ -17,3 +17,4 @@ Nous avons choisi d'utiliser les trois capteurs suivants :
 - Le gyroscope (lorsqu'on incline le téléphone, les obstacles de type gate s'abaissent)
 
 Plus vous restez en vie, plus votre score augmente.
+Background : modified version of https://opengameart.org/content/bevouliin-free-beach-game-background-for-game-developers under OGA-BY 3.0 and CC0 (public domain)

@@ -24,6 +24,7 @@ public class ActorGenerator implements Runnable {
     private static final int MAX_ACTOR_ID = 4;
     private static final int MIN_DELAY = 1500;
     private static final int MAX_DELAY = 3500;
+    private static final double HEIGHT_FACTOR = 0.88;
 
     public ActorGenerator(ActorManager actorManager, View view) {
         this.actorManager = actorManager;
@@ -61,20 +62,20 @@ public class ActorGenerator implements Runnable {
         // Create an actor based on number
         switch (actorTypeId) {
             case (0):
-                System.out.println("1, generating Rock");
-                return new Rock(10, view.getWidth(), (int) (view.getHeight() * 0.8),view.getContext());
+                System.out.println("0, generating Spike");
+                return new Spike(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR));
             case (1):
                 System.out.println("1, generating Rock");
-                return new Rock(10, view.getWidth(), (int) (view.getHeight() * 0.8), view.getContext());
+                return new Rock(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR));
             case (2):
-                System.out.println("1, generating Gate");
-                return new Gate(10, view.getWidth(), (int) (view.getHeight() * 0.8));
+                System.out.println("1, generating Fire");
+                return new Fire(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR), view.getContext());
             case (3):
                 System.out.println("1, generating Gate");
-                return new Gate(10, view.getWidth(), (int) (view.getHeight() * 0.8));
+                return new Gate(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR));
             default:
                 System.out.println("Unknown number, generating Spike");
-                return new Spike(10, view.getWidth(), (int) (view.getHeight() * 0.8));
+                return new Spike(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR));
         }
     }
 
