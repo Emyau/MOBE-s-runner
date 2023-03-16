@@ -45,21 +45,16 @@ public class Fire extends Actor {
     }
 
     private void draw(Canvas canvas) {
-        if( state == FireState.EXTINGUISH ) {
-            paint.setColorFilter(null);
-            paint.setColor(Color.BLUE);
-            canvas.drawRect(x, y, x + width, groundLevel, paint);
-        } else {
+        if( state != FireState.EXTINGUISH ) {
             int frameWidth = frames.getHeight();
             int frameHeight = frames.getHeight();
             Bitmap fireFrame = Bitmap.createBitmap(frames, frameIndex * frameWidth, 0, frameWidth, frameHeight);
             frameIndex = (frameIndex + 1) % nbFrames;
-
-            canvas.drawBitmap(fireFrame, x, groundLevel - frameHeight, paint);
+            canvas.drawBitmap(Bitmap.createScaledBitmap(fireFrame,frameWidth*2,frameHeight*6,false), x, groundLevel - frameHeight*6, paint);
+            Paint p = new Paint();
+            p.setColor(Color.WHITE);
+            canvas.drawText("Y = " + y + " X = " + x, x, y, p);
         }
-        Paint p = new Paint();
-        p.setColor(Color.WHITE);
-        canvas.drawText("Y = " + y + " X = " + x, x, y, p);
     }
 
     public FireState getState() {
