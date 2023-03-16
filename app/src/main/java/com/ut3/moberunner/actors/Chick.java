@@ -9,6 +9,8 @@ import android.graphics.Paint;
 
 import com.ut3.moberunner.R;
 
+import java.util.logging.Filter;
+
 public class Chick extends Actor {
     public enum ChickState {
         RUNNING,
@@ -39,8 +41,8 @@ public class Chick extends Actor {
         // Dimension
         this.x = x;
         y = 100;
-        height = 100;
-        width = 100;
+        height = 75;
+        width = 75;
 
         gravity = 3;
         lift = 35;
@@ -99,7 +101,7 @@ public class Chick extends Actor {
     }
 
     public void draw(Canvas canvas) {
-        Bitmap b = Bitmap.createScaledBitmap(framesRunning[frameRunningIndex], getWidth(), getHeight(), false);
+        Bitmap b = Bitmap.createScaledBitmap(framesRunning[frameRunningIndex], getWidth(), getHeight(),false);
         canvas.drawBitmap(b, x, y, null);
     }
 
