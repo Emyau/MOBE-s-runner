@@ -1,5 +1,6 @@
 package com.ut3.moberunner.actors;
 
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -7,6 +8,7 @@ import android.graphics.Paint;
 public class Gate extends Actor {
 
     private Paint paint;
+    private Paint paintPoint;
     private float speed;
     private float spawnX;
     private float groundLevel;
@@ -18,7 +20,7 @@ public class Gate extends Actor {
         this.spawnX = spawnX;
         this.groundLevel = groundLevel;
 
-        height = 100;
+        height = 200;
         width = 10;
         x1 = spawnX;
         x = spawnX;
@@ -26,11 +28,17 @@ public class Gate extends Actor {
         y = groundLevel - height;
 
         paint = new Paint();
-        paint.setColor(Color.YELLOW);
+        paint.setColor(Color.RED);
+        paint.setMaskFilter(new BlurMaskFilter(10, BlurMaskFilter.Blur.NORMAL));
+        paint.setStrokeWidth(width);
+        paintPoint = new Paint();
+        paintPoint.setColor(Color.YELLOW);
+        paint.setMaskFilter(new BlurMaskFilter(10, BlurMaskFilter.Blur.NORMAL));
         paint.setStrokeWidth(width);
     }
 
     private void draw(Canvas canvas) {
+        canvas.drawPoint(x1, y1, paintPoint);
         canvas.drawLine(x, y, x1, y1, paint);
     }
 
