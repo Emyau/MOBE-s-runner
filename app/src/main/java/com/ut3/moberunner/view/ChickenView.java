@@ -2,6 +2,7 @@ package com.ut3.moberunner.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,6 +11,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -218,6 +220,7 @@ public class ChickenView extends View {
     private void gameOver() {
         actorGenerator.setGenerating(false);
         actorManager.clearActors();
+        saveScore();
     }
 
     private void restartGame() {
@@ -226,4 +229,14 @@ public class ChickenView extends View {
         actorGenerator.setGenerating(true);
     }
 
+    private void saveScore() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
+        SharedPreferences.Editor editor = prefs.edit();
+        long highestScore = prefs.getLong("highestScore", 0);
+        if (score > highestScore) {
+            System.out.println("New High Score : " + score);
+            editor.putLong("highestScore", score);
+            editor.commit();
+        }
+    }
 }
