@@ -5,7 +5,7 @@
     android:id="@+id/startRunButton"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.TitleScreenActivity">
+    tools:context=".activities.TitleScreenActivity">
 
     <TextView
         android:id="@+id/textView"

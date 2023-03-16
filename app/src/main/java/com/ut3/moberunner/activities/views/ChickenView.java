@@ -1,4 +1,4 @@
-package com.ut3.moberunner.view;
+package com.ut3.moberunner.activities.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -140,7 +140,7 @@ public class ChickenView extends View {
         } else {
             drawChick(canvas);
             drawDebug(canvas);
-            actorManager.handleActors(canvas, accelerationVector, microHandler.getAudioLevel());
+            actorManager.handleActors(canvas, accelerationVector, microHandler.getAudioLevel(), rotaZ);
         }
 
         drawGround(canvas);
@@ -224,10 +224,10 @@ public class ChickenView extends View {
     private void saveScore() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
         SharedPreferences.Editor editor = prefs.edit();
-        long highestScore = prefs.getLong("highestScore", 0);
+        int highestScore = prefs.getInt("highestScore", 0);
         if (score > highestScore) {
             System.out.println("New High Score : " + score);
-            editor.putLong("highestScore", score);
+            editor.putInt("highestScore", score);
             editor.apply();
         }
     }
