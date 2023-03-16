@@ -1,90 +1,218 @@
 package com.ut3.moberunner;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Point;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.media.MediaRecorder;
 import android.os.Handler;
-import android.view.Display;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+
+import com.ut3.moberunner.actors.Chick;
+import com.ut3.moberunner.utils.AccelerationVector;
+
+import java.io.IOException;
+import java.util.Random;
 
 public class ChickenView extends View {
 
-    int screenWidth, screenHeight, newWidth, newHeight;
-    int grassX = 0, frontX = 0;
-    int chickenX, chickenY, chickenFrame = 0;
-    Bitmap grass, front;
-    Bitmap chicken[] = new Bitmap[6];
+    private final float CHICK_X = 50;
+    private Chick chick; // the one and only
+    private int score = 0;
 
-    Handler handler;
-    Runnable runnable;
-    final long UPDATE_TIME = 20;
+    private ActorManager actorManager;
+    private ActorGenerator actorGenerator;
+
+    private Paint scorePaint;
+
+    private int groundLevel;
+    private Handler handler;
+    private Runnable runnable;
+    private Random random = new Random();
+
+    private SensorManager sm;
+    private AccelerationVector accelerationVector;
+
+    private SensorEventListener listener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            if (accelerationVector == null) {
+                accelerationVector = new AccelerationVector(Math.abs(event.values[0]),
+                        Math.abs(event.values[1]),
+                        Math.abs(event.values[2]));
+            } else {
+                accelerationVector.setAccelXValue(Math.abs(event.values[0]));
+                accelerationVector.setAccelYValue(Math.abs(event.values[1]));
+                accelerationVector.setAccelZValue(Math.abs(event.values[2]));
+            }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            //not used
+        }
+    };
+
+    // 60fps
+    final long UPDATE_TIME = 1000 / 60;
+    float speed = 10;
+    private double audioLevel = 0;
 
     public ChickenView(Context context) {
         super(context);
-        grass = BitmapFactory.decodeResource(getResources(), R.drawable.forest3);
-        front = BitmapFactory.decodeResource(getResources(), R.drawable.frontground1);
-        chicken[0] = BitmapFactory.decodeResource(getResources(), R.drawable.cat1);
-        chicken[1] = BitmapFactory.decodeResource(getResources(), R.drawable.cat2);
-        chicken[2] = BitmapFactory.decodeResource(getResources(), R.drawable.cat3);
-        chicken[3] = BitmapFactory.decodeResource(getResources(), R.drawable.cat4);
-        chicken[4] = BitmapFactory.decodeResource(getResources(), R.drawable.cat5);
-        chicken[5] = BitmapFactory.decodeResource(getResources(), R.drawable.cat6);
-
-        Display display = ((Activity) getContext()).getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        screenWidth = size.x;
-        screenHeight = size.y;
-        float height = grass.getHeight();
-        float width = grass.getWidth();
-        //float ratio = width / height;
-        newWidth = screenWidth;
-        newHeight = screenHeight;
-        grass = Bitmap.createScaledBitmap(grass, newWidth, newHeight, false);
-        front = Bitmap.createScaledBitmap(front, newWidth, newHeight, false);
-        chickenX = screenWidth / 2 - 200;
-        chickenY = screenHeight - 250;
         handler = new Handler();
+        runnable = this::invalidate;
 
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                invalidate();
-            }
-        };
     }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        setupGame();
+    }
+
+    private void setupGame() {
+        chick = new Chick(CHICK_X);
+        groundLevel = (int) (getHeight() * 0.8);
+        chick.setGroundLevel(groundLevel);
+
+        accelerationVector = new AccelerationVector(0, 0, 0);
+
+        actorManager = new ActorManager(chick);
+        startGenerator();
+
+        scorePaint = new Paint();
+        scorePaint.setTextAlign(Paint.Align.CENTER);
+        scorePaint.setColor(Color.WHITE);
+        scorePaint.setTextSize(40);
+
+        sm = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
+        Sensor sensor = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sm.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+        startRecording();
+    }
+
+    private void startRecording() {
+
+        MediaRecorder recorder = new MediaRecorder();
+        recorder.reset();
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        recorder.setOutputFile(this.getContext().getCacheDir().getAbsolutePath() + "/audio.3gp");
+
+        Thread thread = new Thread(() -> {
+            try {
+                recorder.prepare();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            recorder.start();
+            while (true) {
+                int amplitude = recorder.getMaxAmplitude();
+                if (amplitude > 0) {
+                    audioLevel = 20 * Math.log10(amplitude / 32767.0);
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        grassX -= 10;
-        if(grassX < -newWidth) {
-            grassX = 0;
-        }
-        canvas.drawBitmap(grass, grassX, 0, null);
-        if(grassX < screenWidth - newWidth) {
-            canvas.drawBitmap(grass, grassX+newWidth, 0, null);
+        if (chick.getState() == Chick.ChickState.DEAD) {
+            gameOver();
         }
 
-        frontX -= 20;
-        if(frontX < -newWidth) {
-            frontX = 0;
-        }
-        canvas.drawBitmap(front, frontX, 0, null);
-        if(frontX < screenWidth - newWidth) {
-            canvas.drawBitmap(front, frontX+newWidth, 0, null);
-        }
+        drawGround(canvas);
+        drawChick(canvas);
+        drawDebug(canvas);
+        // TODO: appeler directemnt la méthode de l'actorManager ici
+        actorManager.handleActors(canvas, accelerationVector, audioLevel);
+        updateScore(canvas);
 
-        chickenFrame++;
-        if(chickenFrame == 6) {
-            chickenFrame = 0;
-        }
-        canvas.drawBitmap(chicken[chickenFrame], chickenX, chickenY, null);
-
+        // This define the FPS of the game
         handler.postDelayed(runnable, UPDATE_TIME);
+    }
+
+    private void drawGround(Canvas canvas) {
+        Paint p = new Paint();
+        p.setColor(Color.RED);
+        p.setStrokeWidth(10);
+        canvas.drawLine(0, groundLevel, canvas.getWidth(), groundLevel, p);
+    }
+
+    private void drawChick(Canvas canvas) {
+        chick.nextFrame(canvas);
+    }
+
+    private void drawDebug(Canvas canvas) {
+        Paint p = new Paint();
+        p.setColor(Color.WHITE);
+        p.setTextSize(20);
+        canvas.drawText("Ground level : " + groundLevel + " Chick State : " + chick.getState(), 50, 50, p);
+    }
+
+    private void updateScore(Canvas canvas) {
+        if (chick.getState() != Chick.ChickState.DEAD) {
+            score += 1;
+            canvas.drawText(Integer.toString(score), (float) (getWidth() / 2), (float) (getHeight() * 0.1), scorePaint);
+        } else {
+            canvas.drawText(Integer.toString(score), (float) (getWidth() / 2), (float) (getHeight() * 0.1), scorePaint);
+            canvas.drawText("Game over", (float) (getWidth() / 2), (float) (getHeight() / 2), scorePaint);
+        }
+    }
+
+    // Feature for blind people we won't use
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            switch (chick.getState()) {
+                case DEAD:
+                    restartGame();
+                    return true;
+                case RUNNING:
+                    Log.d("DEV", "onTouch: JUMP");
+                    chick.jump();
+                    return true;
+                case JUMPING:
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private void startGenerator() {
+        actorGenerator = new ActorGenerator(actorManager, this);
+        new Thread(actorGenerator).start();
+    }
+
+    private void gameOver() {
+        actorGenerator.setGenerating(false);
+        actorManager.clearActors();
+    }
+
+    private void restartGame() {
+        score = 0;
+        chick.setState(Chick.ChickState.RUNNING);
+        actorGenerator.setGenerating(true);
     }
 }

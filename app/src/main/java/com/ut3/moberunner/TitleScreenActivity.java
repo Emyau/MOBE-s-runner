@@ -1,19 +1,14 @@
 package com.ut3.moberunner;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class TitleScreenActivity extends AppCompatActivity {
 
@@ -28,22 +23,12 @@ public class TitleScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_title_screen);
         prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         volumeImage = (ImageView) findViewById(R.id.volumeIcon);
-        volumeImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleMute();
-            }
-        });
+        volumeImage.setOnClickListener(v -> toggleMute());
         isMuted = prefs.getBoolean("isMuted", false);
         setVolumeIcon(isMuted);
 
         Button runButton = (Button) findViewById(R.id.runButton);
-        runButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startRun();
-            }
-        });
+        runButton.setOnClickListener(v -> startRun());
     }
 
     private void startRun() {
@@ -51,7 +36,7 @@ public class TitleScreenActivity extends AppCompatActivity {
     }
 
     private void setVolumeIcon(boolean isMuted) {
-        if(isMuted) {
+        if (isMuted) {
             volumeImage.setImageResource(R.drawable.volume_on);
         } else {
             volumeImage.setImageResource(R.drawable.volume_off);
@@ -59,7 +44,7 @@ public class TitleScreenActivity extends AppCompatActivity {
     }
 
     private void toggleMute() {
-        if(isMuted) {
+        if (isMuted) {
             unmute();
             isMuted = false;
         } else {
