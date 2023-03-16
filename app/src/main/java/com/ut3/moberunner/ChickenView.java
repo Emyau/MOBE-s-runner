@@ -137,6 +137,7 @@ public class ChickenView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        long startTime = System.nanoTime();
         if (chick.getState() == Chick.ChickState.DEAD) {
             gameOver();
         }
@@ -148,8 +149,14 @@ public class ChickenView extends View {
         actorManager.handleActors(canvas, accelerationVector, audioLevel);
         updateScore(canvas);
 
-        // This define the FPS of the game
-        handler.postDelayed(runnable, UPDATE_TIME);
+        long stopTime = System.nanoTime();
+        long timeElapsed = (stopTime - startTime) / 1000000;
+        if (timeElapsed > UPDATE_TIME) {
+            Log.d("DEV", "Low framerate !");
+            handler.post(runnable);
+        } else {
+            handler.postDelayed(runnable, UPDATE_TIME - timeElapsed);
+        }
     }
 
     private void drawGround(Canvas canvas) {
