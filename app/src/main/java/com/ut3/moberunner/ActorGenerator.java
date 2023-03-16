@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.ut3.moberunner.actors.Actor;
 import com.ut3.moberunner.actors.Fire;
+import com.ut3.moberunner.actors.Gate;
 import com.ut3.moberunner.actors.Rock;
 import com.ut3.moberunner.actors.Spike;
 
@@ -21,7 +22,7 @@ public class ActorGenerator implements Runnable {
 
     private Random random = new Random();
 
-    private static final int MAX_ACTOR_ID = 3;
+    private static final int MAX_ACTOR_ID = 4;
     private static final int MIN_DELAY = 1500;
     private static final int MAX_DELAY = 3500;
 
@@ -69,6 +70,9 @@ public class ActorGenerator implements Runnable {
             case (2):
                 System.out.println("1, generating Fire");
                 return new Fire(10, view.getWidth(), (int) (view.getHeight() * 0.8), view.getContext());
+            case (3):
+                System.out.println("1, generating Gate");
+                return new Gate(10, view.getWidth(), (int) (view.getHeight() * 0.8));
             default:
                 System.out.println("Unknown number, generating Spike");
                 return new Spike(10, view.getWidth(), (int) (view.getHeight() * 0.8));
