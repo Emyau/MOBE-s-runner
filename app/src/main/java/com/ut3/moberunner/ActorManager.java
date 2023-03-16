@@ -42,6 +42,7 @@ public class ActorManager {
     }
 
     // Handle actor movement and collision with chick
+    //a opti si on a le temps
     private void handleActor(Actor actor, Canvas canvas, AccelerationVector accelerationVector, double audioLevel) {
 
         if(actor instanceof Rock){

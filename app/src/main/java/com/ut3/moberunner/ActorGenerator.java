@@ -40,7 +40,7 @@ public class ActorGenerator implements Runnable {
     public void generateActors() {
         if(isGenerating) {
             // If there are no actors, generate one right away
-            if(actorManager.getActorList().size() == 0 || actorManager.getActorList().isEmpty()) {
+            if(actorManager.getActorList().isEmpty()) { //obligé de mettre les deux conditions ?
                 actorManager.addActor(generateRandomActor());
             }
             // Create a random delay for the next random actor

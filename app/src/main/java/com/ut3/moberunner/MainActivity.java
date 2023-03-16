@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Intent i = new Intent(this, TitleScreenActivity.class);
         startActivity(i, savedInstanceState);
+        //Pour demander l'autorisation manuelle au démarrage
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 200);
     }
 }

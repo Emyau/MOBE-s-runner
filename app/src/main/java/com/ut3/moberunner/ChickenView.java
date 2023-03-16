@@ -149,7 +149,8 @@ public class ChickenView extends View {
         drawGround(canvas);
         drawChick(canvas);
         drawDebug(canvas);
-        handleActors(canvas, accelerationVector, audioLevel);
+        //appeler directemnt la méthode de l'actorManager ici
+        actorManager.handleActors(canvas, accelerationVector, audioLevel);
         updateScore(canvas);
 
         // This define the FPS of the game
@@ -172,10 +173,6 @@ public class ChickenView extends View {
         p.setColor(Color.WHITE);
         p.setTextSize(20);
         canvas.drawText("Ground level : " + groundLevel + " Chick State : " + chick.getState(), 50, 50, p);
-    }
-
-    private void handleActors(Canvas canvas, AccelerationVector accelerationVector, double audioLevel) {
-        actorManager.handleActors(canvas, accelerationVector, audioLevel);
     }
 
     private void updateScore(Canvas canvas) {
