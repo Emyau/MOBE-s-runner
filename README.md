@@ -20,7 +20,7 @@ Ou MOURIR.
 ### **Capteurs utilisés**
 Nous avons choisi d'utiliser les trois capteurs suivants :
 
-- Le **microphone** (lorsqu'on souffle assez fort dessus, et donc qu'il détecte un volume sonore important, les obstacles de type feu disparaissent)
+- Le **microphone** (lorsqu'on souffle assez fort dessus, et donc qu'il détecte un volume sonore important, les obstacles de type feu disparaissent. Le feu change graduellement de couleur en fonction du volume pour indiquer sa faiblesse.)
 - L'**accéléromètre** (lorsqu'on secoue le téléphone, les obstacles de type rochers disparaissent)
 - Le **gyroscope** (lorsqu'on incline le téléphone, les obstacles de type gate s'abaissent)
 
