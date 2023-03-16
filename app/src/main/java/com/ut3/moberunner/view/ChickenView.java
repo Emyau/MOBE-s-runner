@@ -11,7 +11,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -232,8 +231,12 @@ public class ChickenView extends View {
 
     private void saveScore() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
+        SharedPreferences.Editor editor = prefs.edit();
         long highestScore = prefs.getLong("highestScore", 0);
-        if(score > highestScore)
-            prefs.edit().putLong("highestScore", score);
+        if (score > highestScore) {
+            System.out.println("New High Score : " + score);
+            editor.putLong("highestScore", score);
+            editor.commit();
+        }
     }
 }
