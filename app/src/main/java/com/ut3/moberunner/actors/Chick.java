@@ -1,8 +1,13 @@
 package com.ut3.moberunner.actors;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+
+import com.ut3.moberunner.R;
 
 public class Chick extends Actor {
     public enum ChickState {
@@ -22,7 +27,11 @@ public class Chick extends Actor {
 
     public Paint paint;
 
-    public Chick(float x) {
+    private Bitmap framesRunning;
+    private int nbFramesRunning = 10;
+    private int frameRunningIndex = 0;
+
+    public Chick(float x, Context context) {
         super();
         this.state = ChickState.RUNNING;
 
@@ -34,6 +43,8 @@ public class Chick extends Actor {
 
         gravity = 3;
         lift = 35;
+
+        framesRunning = BitmapFactory.decodeResource(context.getResources(), R.drawable.fire_sheet);
 
         paint = new Paint();
         paint.setColor(Color.RED);

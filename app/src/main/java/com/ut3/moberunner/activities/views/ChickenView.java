@@ -106,7 +106,7 @@ public class ChickenView extends View {
 
     private void setupGame() {
         float CHICK_X = 50;
-        chick = new Chick(CHICK_X);
+        chick = new Chick(CHICK_X, getContext());
         groundLevel = (int) (getHeight() * 0.8);
         chick.setGroundLevel(groundLevel);
 
