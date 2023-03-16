@@ -6,6 +6,7 @@ import android.util.Log;
 import com.ut3.moberunner.actors.Actor;
 import com.ut3.moberunner.actors.Chick;
 import com.ut3.moberunner.actors.Fire;
+import com.ut3.moberunner.actors.Gate;
 import com.ut3.moberunner.actors.Rock;
 import com.ut3.moberunner.utils.AccelerationVector;
 
@@ -27,16 +28,16 @@ public class ActorManager {
         this.chick = chick;
     }
 
-    public void handleActors(Canvas canvas, AccelerationVector accelerationVector, double audioLevel) {
+    public void handleActors(Canvas canvas, AccelerationVector accelerationVector, double audioLevel, float rotaZ) {
         if (!actorList.isEmpty()) {
             for (Actor actor : actorList) {
-                handleActor(actor, canvas, accelerationVector, audioLevel);
+                handleActor(actor, canvas, accelerationVector, audioLevel, rotaZ);
             }
         }
     }
 
     // Handle actor movement and collision with chick
-    private void handleActor(Actor actor, Canvas canvas, AccelerationVector accelerationVector, double audioLevel) {
+    private void handleActor(Actor actor, Canvas canvas, AccelerationVector accelerationVector, double audioLevel, float rotaZ) {
 
         if (actor instanceof Rock) {
             Rock rock = (Rock) actor;
@@ -52,6 +53,11 @@ public class ActorManager {
             if (fire.getState() == Fire.FireState.EXTINGUISH) {
                 despawnActor(actor);
             }
+        }
+
+        if (actor instanceof Gate) {
+            Gate gate = (Gate) actor;
+            gate.setState(rotaZ);
         }
 
         actor.nextFrame(canvas);
