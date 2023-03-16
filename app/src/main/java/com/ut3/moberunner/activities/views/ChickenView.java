@@ -113,6 +113,7 @@ public class ChickenView extends View {
     }
 
     private void setupGame() {
+        displayBackground();
         float CHICK_X = 50;
         chick = new Chick(CHICK_X, getContext());
         groundLevel = (int) (getHeight() * 0.88);
@@ -157,7 +158,7 @@ public class ChickenView extends View {
         drawChick(canvas);
         drawDebug(canvas);
 
-        actorManager.handleActors(canvas, accelerationVector, microHandler.getAudioLevel());
+        actorManager.handleActors(canvas, accelerationVector, microHandler.getAudioLevel(), rotaZ);
         updateScore(canvas);
 
         long stopTime = System.nanoTime();
