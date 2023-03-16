@@ -1,5 +1,6 @@
 package com.ut3.moberunner.actorhandlers;
 
+import android.util.Log;
 import android.view.View;
 
 import com.ut3.moberunner.actors.Actor;
@@ -62,20 +63,17 @@ public class ActorGenerator implements Runnable {
         int actorTypeId = random.nextInt(MAX_ACTOR_ID);
         // Create an actor based on number
         switch (actorTypeId) {
-            case (0):
-                System.out.println("0, generating Spike");
-                return new Spike(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR), view.getContext());
             case (1):
-                System.out.println("1, generating Rock");
+                Log.d("DEV", "generateRandomActor: Generate Rock");
                 return new Rock(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR), view.getContext());
             case (2):
-                System.out.println("1, generating Fire");
+                Log.d("DEV", "generateRandomActor: Generate Fire");
                 return new Fire(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR), view.getContext());
             case (3):
-                System.out.println("1, generating Gate");
+                Log.d("DEV", "generateRandomActor: Generate Gate");
                 return new Gate(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR));
             default:
-                System.out.println("Unknown number, generating Spike");
+                Log.d("DEV", "generateRandomActor: Generate Spike");
                 return new Spike(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR), view.getContext());
         }
     }
