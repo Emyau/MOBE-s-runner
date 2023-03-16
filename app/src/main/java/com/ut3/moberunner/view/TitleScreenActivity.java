@@ -24,7 +24,7 @@ public class TitleScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_title_screen);
-        prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         highestScore = prefs.getLong("highestScore", 0);
         volumeImage = (ImageView) findViewById(R.id.volumeIcon);
         volumeImage.setOnClickListener(v -> toggleMute());
