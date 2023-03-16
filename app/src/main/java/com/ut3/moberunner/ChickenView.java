@@ -9,16 +9,17 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.MediaRecorder;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.ut3.moberunner.actors.Chick;
+import com.ut3.moberunner.sensorhandlers.MicroHandler;
 import com.ut3.moberunner.utils.AccelerationVector;
 
-import java.io.IOException;
 import java.util.Random;
 
 public class ChickenView extends View {
@@ -29,6 +30,8 @@ public class ChickenView extends View {
 
     private ActorManager actorManager;
     private ActorGenerator actorGenerator;
+
+    private MicroHandler microHandler;
 
     private Paint scorePaint;
 
@@ -63,7 +66,7 @@ public class ChickenView extends View {
     // 60fps
     final long UPDATE_TIME = 1000 / 60;
     float speed = 10;
-    private double audioLevel = 0;
+    private boolean isRecording;
 
     public ChickenView(Context context) {
         super(context);
@@ -76,6 +79,18 @@ public class ChickenView extends View {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         setupGame();
+    }
+
+    @Override
+    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if (visibility == View.VISIBLE) {
+            if (microHandler != null) {
+                microHandler.startRecording();
+            }
+        } else {
+            microHandler.stopRecording();
+        }
     }
 
     private void setupGame() {
@@ -97,41 +112,9 @@ public class ChickenView extends View {
         Sensor sensor = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sm.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
 
-        startRecording();
+        microHandler = new MicroHandler(getContext());
+        microHandler.startRecording();
     }
-
-    private void startRecording() {
-
-        MediaRecorder recorder = new MediaRecorder();
-        recorder.reset();
-        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        recorder.setOutputFile(this.getContext().getCacheDir().getAbsolutePath() + "/audio.3gp");
-
-        Thread thread = new Thread(() -> {
-            try {
-                recorder.prepare();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            recorder.start();
-            while (true) {
-                int amplitude = recorder.getMaxAmplitude();
-                if (amplitude > 0) {
-                    audioLevel = 20 * Math.log10(amplitude / 32767.0);
-                }
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        thread.start();
-    }
-
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -145,7 +128,7 @@ public class ChickenView extends View {
         drawChick(canvas);
         drawDebug(canvas);
         // TODO: appeler directemnt la méthode de l'actorManager ici
-        actorManager.handleActors(canvas, accelerationVector, audioLevel);
+        actorManager.handleActors(canvas, accelerationVector, microHandler.getAudioLevel());
         updateScore(canvas);
 
         // This define the FPS of the game
