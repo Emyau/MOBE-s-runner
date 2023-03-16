@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import com.ut3.moberunner.R;
-
 import com.ut3.moberunner.utils.AccelerationVector;
 
 public class Rock extends Actor {
@@ -36,15 +35,15 @@ public class Rock extends Actor {
         this.state = RockState.UP;
 
         height = 200;
-        width = 120;
+        width = 200;
         x = spawnX;
         y = groundLevel - height;
 
         rockUP = BitmapFactory.decodeResource(context.getResources(), R.drawable.rock);
         rockMID = BitmapFactory.decodeResource(context.getResources(), R.drawable.little_rock);
 
-        rockUP = Bitmap.createScaledBitmap(rockUP, 120, 120, false);
-        rockMID = Bitmap.createScaledBitmap(rockMID, 120, 120, false);
+        rockUP = Bitmap.createScaledBitmap(rockUP, width, height, false);
+        rockMID = Bitmap.createScaledBitmap(rockMID, width, height, false);
 
         toUse = rockUP;
     }
@@ -56,11 +55,11 @@ public class Rock extends Actor {
                 toUse = rockMID;
                 break;
             case DOWN:
-                x = 0;
+                x = -width;
                 y = groundLevel;
                 break;
         }
-        canvas.drawBitmap(toUse, x, groundLevel-100, null);
+        canvas.drawBitmap(toUse, x, groundLevel - height, null);
     }
 
     @Override
