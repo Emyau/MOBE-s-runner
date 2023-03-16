@@ -64,7 +64,7 @@ public class ActorGenerator implements Runnable {
         switch (actorTypeId) {
             case (0):
                 System.out.println("0, generating Spike");
-                return new Spike(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR));
+                return new Spike(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR), view.getContext());
             case (1):
                 System.out.println("1, generating Rock");
                 return new Rock(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR), view.getContext());
@@ -76,7 +76,7 @@ public class ActorGenerator implements Runnable {
                 return new Gate(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR));
             default:
                 System.out.println("Unknown number, generating Spike");
-                return new Spike(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR));
+                return new Spike(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR), view.getContext());
         }
     }
 

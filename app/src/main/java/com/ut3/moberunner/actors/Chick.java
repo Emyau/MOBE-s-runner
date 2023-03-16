@@ -103,6 +103,7 @@ public class Chick extends Actor {
     public void draw(Canvas canvas) {
         Bitmap b = Bitmap.createScaledBitmap(framesRunning[frameRunningIndex], getWidth(), getHeight(),false);
         canvas.drawBitmap(b, x, y, null);
+
     }
 
     private float getGroundHitbox() {
