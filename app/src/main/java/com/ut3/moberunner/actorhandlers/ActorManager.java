@@ -1,4 +1,4 @@
-package com.ut3.moberunner;
+package com.ut3.moberunner.actorhandlers;
 
 import android.graphics.Canvas;
 import android.util.Log;

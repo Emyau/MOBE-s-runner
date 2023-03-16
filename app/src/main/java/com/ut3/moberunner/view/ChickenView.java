@@ -18,8 +18,8 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.ut3.moberunner.ActorGenerator;
-import com.ut3.moberunner.ActorManager;
+import com.ut3.moberunner.actorhandlers.ActorGenerator;
+import com.ut3.moberunner.actorhandlers.ActorManager;
 import com.ut3.moberunner.actors.Chick;
 import com.ut3.moberunner.sensorhandlers.MicroHandler;
 import com.ut3.moberunner.utils.AccelerationVector;
