@@ -69,9 +69,10 @@ public class ActorGenerator implements Runnable {
             case (2):
                 Log.d("DEV", "generateRandomActor: Generate Fire");
                 return new Fire(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR), view.getContext());
-            case (3):
+            // TODO : Implement gate with gyro meter
+            /**case (3):
                 Log.d("DEV", "generateRandomActor: Generate Gate");
-                return new Gate(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR));
+                return new Gate(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR));**/
             default:
                 Log.d("DEV", "generateRandomActor: Generate Spike");
                 return new Spike(10, view.getWidth(), (int) (view.getHeight() * HEIGHT_FACTOR), view.getContext());

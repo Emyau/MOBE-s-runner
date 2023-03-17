@@ -22,7 +22,7 @@ Nous avons choisi d'utiliser les trois capteurs suivants :
 
 - Le **microphone** (lorsqu'on souffle assez fort dessus, et donc qu'il détecte un volume sonore important, les obstacles de type feu disparaissent. Le feu change graduellement de couleur en fonction du volume pour indiquer sa faiblesse.)
 - L'**accéléromètre** (lorsqu'on secoue le téléphone, les obstacles de type rochers disparaissent)
-- Le **gyroscope** (lorsqu'on incline le téléphone, les obstacles de type gate s'abaissent)
+- Le **gyroscope** (lorsqu'on incline le téléphone, les obstacles de type gate s'abaissent) NOT WORKING
 
 Plus vous restez en vie, plus votre score augmente. Le meilleur score est enregistré.
 
@@ -53,5 +53,6 @@ Assets sous licence CC BY 3.0 https://creativecommons.org/licenses/by/3.0/ et/ou
 - Version modifiée de Rock Pile par FunWithPixels : https://opengameart.org/content/rock-pile (CC BY 3.0)
 - Version modifiée de 2D Pixel Fire Sprite Strip par Color Optimist : https://opengameart.org/content/2d-pixel-fire-sprite-strip (CC BY 3.0 et 4.0)
 - Version modifiée de bevouliin Free Beach game background for game developers par bevouiliin : https://opengameart.org/content/bevouliin-free-beach-game-background-for-game-developers (CC BY 3.0)
+- Musique Josh Penn-Pierson : https://github.com/OpenSourceMusic/Hello-There/blob/master/Hello%20There%20v1.0.mp3
 
 Assets du poussin produits par l'équipe
